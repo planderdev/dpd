@@ -1,0 +1,28 @@
+# OS and editor noise
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*.swo
+
+# Local dependency/cache directories
+node_modules/
+.cache/
+.tmp/
+tmp/
+temp/
+
+# Local logs and generated diagnostics
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+screenshots/
+captures/
+
+# Codex/local environment artifacts
+.codex/
+.env
+.env.*
+!.env.example
+

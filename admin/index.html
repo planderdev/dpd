@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DPD 콘텐츠 관리자</title>
+  <link rel="stylesheet" href="../assets/css/admin-system.css">
+  <link rel="stylesheet" href="../assets/css/admin-icons.css">
+  <link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body class="cms-body">
+  <div class="cms-shell">
+    <aside class="cms-sidebar">
+      <div class="cms-sidebar-logo">
+        <img src="../assets/images/dpd/logo-p.svg" alt="DPD">
+        <span>CMS</span>
+      </div>
+      <nav class="cms-nav" aria-label="관리 메뉴">
+        <button type="button" data-cms-section="dashboard" class="is-active"><i class="ri-dashboard-3-line" aria-hidden="true"></i><span>대시보드</span></button>
+        <button type="button" data-cms-section="mainHero"><i class="ri-slideshow-3-line" aria-hidden="true"></i><span>메인 히어로</span></button>
+        <button type="button" data-cms-section="developmentItems"><i class="ri-tools-line" aria-hidden="true"></i><span>개발품목</span></button>
+        <button type="button" data-cms-section="handledItems"><i class="ri-box-3-line" aria-hidden="true"></i><span>공급품목</span></button>
+        <button type="button" data-cms-section="customers"><i class="ri-building-4-line" aria-hidden="true"></i><span>고객사</span></button>
+        <button type="button" data-cms-section="resources"><i class="ri-file-list-3-line" aria-hidden="true"></i><span>자료실</span></button>
+        <button type="button" data-cms-section="notices"><i class="ri-notification-3-line" aria-hidden="true"></i><span>공지사항</span></button>
+        <button type="button" data-cms-section="contactForms"><i class="ri-mail-send-line" aria-hidden="true"></i><span>컨택폼</span></button>
+      </nav>
+      <div class="cms-sidebar-bottom">
+        <button class="cms-button cms-button--ghost cms-button--wide" type="button" id="cmsLogoutBtn">
+          <i class="ri-logout-circle-line" aria-hidden="true"></i>
+          <span>로그아웃</span>
+        </button>
+      </div>
+    </aside>
+    <main class="cms-main">
+      <header class="cms-topbar">
+        <div>
+          <span class="cms-kicker">DPD CONTENT DATABASE</span>
+          <h1 class="cms-title" id="cmsPageTitle">대시보드</h1>
+        </div>
+        <div class="cms-topbar-actions">
+          <a class="cms-button cms-button--info" href="../index.html" target="_blank" rel="noopener">
+            <i class="ri-external-link-line" aria-hidden="true"></i>
+            <span>프론트 보기</span>
+          </a>
+          <button class="cms-button cms-button--ghost" type="button" id="cmsJsonToggle">
+            <i class="ri-code-box-line" aria-hidden="true"></i>
+            <span>JSON 관리</span>
+          </button>
+          <button class="cms-button cms-button--danger" type="button" id="cmsResetBtn">
+            <i class="ri-refresh-line" aria-hidden="true"></i>
+            <span>초기화</span>
+          </button>
+        </div>
+      </header>
+
+      <section class="cms-dashboard" id="cmsDashboardPanel" aria-label="관리자 대시보드"></section>
+
+      <section class="cms-grid cms-grid--list" id="cmsListPanel" aria-label="콘텐츠 목록">
+        <article class="cms-panel cms-list-panel">
+          <div class="cms-list-head">
+            <div class="cms-list-title-stack">
+              <span class="cms-list-eyebrow">CONTENT LIST</span>
+              <strong id="cmsListTitle">목록</strong>
+            </div>
+            <a class="cms-button cms-button--success" href="edit.html?section=mainHero&amp;mode=new" id="cmsAddLink">
+              <i class="ri-add-line" aria-hidden="true"></i>
+              <span>추가</span>
+            </a>
+          </div>
+          <div class="cms-list-toolbar" id="cmsListControls">
+            <label class="cms-search-field" for="cmsListSearch">
+              <span>검색</span>
+              <span class="cms-search-control">
+                <i class="ri-search-line" aria-hidden="true"></i>
+                <input class="cms-input" type="search" id="cmsListSearch" placeholder="제목, 내용, 메타 정보 검색">
+              </span>
+            </label>
+            <div class="cms-filter-group">
+              <label class="cms-filter-field" for="cmsStateFilter">
+                <span>상태</span>
+                <span class="cms-select-wrap">
+                  <select class="cms-select" id="cmsStateFilter">
+                    <option value="all">전체 상태</option>
+                    <option value="enabled">노출</option>
+                    <option value="disabled">숨김</option>
+                  </select>
+                  <i class="ri-arrow-down-s-line" aria-hidden="true"></i>
+                </span>
+              </label>
+              <label class="cms-filter-field" for="cmsMetaFilter" id="cmsMetaFilterGroup">
+                <span>구분</span>
+                <span class="cms-select-wrap">
+                  <select class="cms-select" id="cmsMetaFilter">
+                    <option value="all">전체 구분</option>
+                  </select>
+                  <i class="ri-arrow-down-s-line" aria-hidden="true"></i>
+                </span>
+              </label>
+            </div>
+          </div>
+          <div class="cms-option-manager" id="cmsCountryManager" hidden>
+            <div class="cms-option-manager-head">
+              <div>
+                <strong>제조 국가 라벨 관리</strong>
+                <p>공급품목 편집 화면의 제조 국가 셀렉트 옵션으로 자동 연동됩니다.</p>
+              </div>
+            </div>
+            <div class="cms-option-manager-form">
+              <label class="cms-search-field" for="cmsCountryInput">
+                <span>국가 라벨 추가</span>
+                <span class="cms-search-control">
+                  <i class="ri-map-pin-line" aria-hidden="true"></i>
+                  <input class="cms-input" type="text" id="cmsCountryInput" placeholder="예: TAIWAN">
+                </span>
+              </label>
+              <button class="cms-button cms-button--success" type="button" id="cmsCountryAddBtn">
+                <i class="ri-add-line" aria-hidden="true"></i>
+                <span>추가</span>
+              </button>
+            </div>
+            <div class="cms-option-chip-list" id="cmsCountryList" aria-label="제조 국가 라벨 목록"></div>
+          </div>
+          <div class="cms-bulk-bar" id="cmsBulkBar">
+            <div class="cms-bulk-left">
+              <label class="cms-table-check" for="cmsSelectAll">
+                <input type="checkbox" id="cmsSelectAll">
+                <span>전체선택</span>
+              </label>
+              <span class="cms-bulk-selected" id="cmsSelectedCount">0개 선택</span>
+            </div>
+            <div class="cms-bulk-actions">
+              <span class="cms-select-wrap cms-select-wrap--compact">
+                <select class="cms-select" id="cmsBulkAction">
+                  <option value="">벌크 액션 선택</option>
+                </select>
+                <i class="ri-arrow-down-s-line" aria-hidden="true"></i>
+              </span>
+              <button class="cms-button cms-button--ghost cms-button--compact" type="button" id="cmsBulkApplyBtn">적용</button>
+            </div>
+          </div>
+          <div class="cms-table" role="table" aria-label="콘텐츠 목록 테이블">
+            <div class="cms-table-row cms-table-head-row" role="row">
+              <div class="cms-table-cell cms-table-cell--check" role="columnheader">선택</div>
+              <div class="cms-table-cell" role="columnheader">제목</div>
+              <div class="cms-table-cell" role="columnheader">상태</div>
+              <div class="cms-table-cell" role="columnheader">구분/정보</div>
+              <div class="cms-table-cell cms-table-cell--actions" role="columnheader">관리</div>
+            </div>
+            <div class="cms-table-body" id="cmsItemList" role="rowgroup"></div>
+          </div>
+          <div class="cms-pagination" id="cmsPagination" hidden aria-label="목록 페이지네이션"></div>
+        </article>
+      </section>
+
+      <section class="cms-panel cms-json-panel" id="cmsJsonPanel" aria-label="JSON 데이터 관리">
+        <div class="cms-form-group">
+          <label class="cms-label" for="cmsJsonData">전체 DB JSON</label>
+          <textarea class="cms-textarea" id="cmsJsonData" spellcheck="false"></textarea>
+        </div>
+        <div class="cms-editor-actions">
+          <button class="cms-button cms-button--info" type="button" id="cmsExportBtn">
+            <i class="ri-download-2-line" aria-hidden="true"></i>
+            <span>현재 DB 불러오기</span>
+          </button>
+          <button class="cms-button cms-button--success" type="button" id="cmsImportBtn">
+            <i class="ri-upload-2-line" aria-hidden="true"></i>
+            <span>JSON 적용</span>
+          </button>
+        </div>
+      </section>
+    </main>
+  </div>
+  <div class="cms-toast" id="cmsToast" role="status" aria-live="polite"></div>
+  <script src="../assets/js/cms-store.js"></script>
+  <script src="../assets/js/cms-admin.js"></script>
+</body>
+</html>

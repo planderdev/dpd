@@ -1,0 +1,276 @@
+<section class="footer-modal-content recruit-modal-content">
+	<button onclick="ajaxUnLoad();" title="팝업 닫기" class="modal-close-btn"><i class="ri-close-line" aria-hidden="true"></i></button>
+	<div class="footer-inner-box">
+		<div class="footer-inner">
+			<article class="inquiry-form-panel">
+				<section class="bbs-write-con">
+					<form action="./recruit_ok.html" name="form" method="post" enctype="multipart/form-data">
+					<input type="hidden" name="lang" value="2">
+						<article class="bbs-write-tbl-box">
+							<div class="recruit-form-tit-box">
+								<h4 class="recruit-pop-form-tit">Job Application</h4>
+								<p class="inquiry-essential-txt"><span class="essential-icon right">*</span> Required fields.</p>
+							</div>
+							<table class="bbs-write-tbl">
+								<caption>문의폼입니다.</caption>
+								<colgroup>
+									<col class="dpd-form-label-col dpd-form-label-col--wide">
+									<col>
+								</colgroup>
+								<tbody>
+									<!-- <tr>
+										<th scope="row">지원분야 <span class="essential-icon">*</span></th>
+										<td>
+											<fieldset class="apply-fieldset cm-form-fieldset-box">
+												<select name="types" class="write-select apply-select width100">
+													<option value="">선택해주세요</option>
+													<option value="1">지원분야1</option>
+													<option value="2">지원분야1</option>
+													<option value="3">지원분야1</option>
+													<option value="4">지원분야1</option>
+												</select>
+											</fieldset>
+										</td>
+									</tr> -->
+									<tr>
+										<th scope="row">Full Name <span class="essential-icon">*</span></th>
+										<td><input type="text" class="write-input" name="name"></td>
+									</tr>
+									<tr>
+										<th scope="row">Phone Number <span class="essential-icon">*</span></th>
+										<td>
+											<fieldset class="phone-fieldset cm-form-fieldset-box">
+												<select name="phone1" class="write-select width20">
+													<option value="010">010</option>
+													<option value="011">011</option>
+													<option value="016">016</option>
+													<option value="017">017</option>
+													<option value="018">018</option>
+													<option value="019">019</option>
+												</select>
+												<span class="hypen">-</span>
+												<input type="tel" class="write-input width30" name="phone2" title="연락처 가운데" maxlength="4">
+												<span class="hypen">-</span>
+												<input type="tel" class="write-input width30" name="phone3" title="연락처 마지막" maxlength="4">
+											</fieldset>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row">Email <span class="essential-icon">*</span></th>
+										<td>
+											<fieldset class="email-fieldset cm-form-fieldset-box">
+												<input type="text" class="write-input width30" name="email1"><span class="hypen">@</span>
+												<input type="text" class="write-input width30" name="email2">
+												<select name="email3" class="write-select email-select" onchange="res();">
+													<option value="a">Other</option>
+													<option value="naver.com">naver.com</option>
+													<option value="nate.com">nate.com</option>
+													<option value="hanmail.net">hanmail.net</option>
+													<option value="gmail.com">gmail.com</option>
+													<option value="hotmail.com">hotmail.com</option>
+													<option value="outlook.com">outlook.com</option>
+													<option value="empal.com">empal.com</option>
+													<option value="dreamwiz.com">dreamwiz.com</option>
+													<option value="lycos.co.kr">lycos.co.kr</option>
+													<option value="yahoo.co.kr">yahoo.co.kr</option>
+													<option value="korea.com">korea.com</option>
+													<option value="paran.com">paran.com</option>
+												</select>
+											</fieldset>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row">Subject <span class="essential-icon">*</span></th>
+										<td><input type="text" class="write-input" name="subject"></td>
+									</tr>
+									<tr>
+										<th scope="row" class="alignTop">Message <span class="essential-icon">*</span></th>
+										<td>
+											<textarea name="content" class="write-textarea" placeholder="Enter your message here"></textarea>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row">Resume <span class="essential-icon">*</span></th>
+										<td>
+											<fieldset class="cm-form-fieldset-box write-check">
+												<div class="file-custom-box"> 
+													<input name="bbs_file" type="file" id="fileOpenButton" class="write-input upload-hidden"> 
+													<input class="write-input upload-name" value="" disabled="disabled"> 
+													<label for="fileOpenButton">Upload</label> 
+												</div>
+											</fieldset>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row">Portfolio</th>
+										<td>
+											<fieldset class="cm-form-fieldset-box write-check">
+												<div class="file-custom-box"> 
+													<input name="bbs_file2" type="file" id="fileOpenButton2" class="write-input upload-hidden"> 
+													<input class="write-input upload-name" value="" disabled="disabled"> 
+													<label for="fileOpenButton2">Upload</label> 
+												</div>
+											</fieldset>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row">URL</th>
+										<td><input type="text" class="write-input" name="link_url"></td>
+									</tr>
+									<tr>
+										<th scope="row" class="">Verification Code <span class="essential-icon">*</span></th>
+										<td>
+											<fieldset class="cm-form-fieldset-box security-code-box write-check">
+												<span class="security-code">EUBLWN</span>
+												<input type="text" class="write-input" name="num" maxlength="6" placeholder="Enter the code shown on the left.">
+											</fieldset>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</article>
+
+						<article class="bbs-inquiry-agree-con">
+							<p class="agree-txt">
+								<input type="checkbox" name="agree1" id="agree1">
+								<label for="agree1"><i class="ri-checkbox-circle-line" aria-hidden="true"></i>I agree to the <span>Privacy Policy</span> <span class="essential-icon dot"></span></label>
+								<span class="more">View Details <i class="ri-arrow-down-s-line" aria-hidden="true"></i></span>
+							</p>
+							<div class="agree-inner">
+								<h3 class="agree-tit">Privacy Policy</h3>
+								<div class="inquiry-agreement-con editor">
+																										 
+									In order to protect the user’s personal information and rights in accordance with the Personal Information Protection Act and to address user complaints related to personal information, &lt;회사명칭&gt; (hereunder “company”) applies the policy it established as described below.<br/>“company” notifies updates of the Privacy Policy, if any, through the noticeboard of its website (or personal notification).<br/><br><br/>ο This policy is effective as of January 1, 2021.<br/><br><br/>1. Purpose of Personal Information Processing “company”utilizes the personal information collected for the purposes described below. Personal information that is handled is not used for purposes other than those stated below. If there is any change to the purpose of use, prior consent will be sought.<br/>A. Website membership management<br/>Identification• authentication for service provision, membership maintenance, identification in accordance with the limited verification of identity system, and prevention of illegal use of service.<br/><br><br/>B. Handling of civil applications<br/>Personal information may be used for the purpose of identifying applicants, checking application details, contacting for fact checking, and notifying the results.<br/>C. Provision of materials or services<br/>Personal information may be used for service provision purposes.<br/>D. Use for marketing and advertisement<br/>Personal information may be used for the purpose of checking of validity of services, grasping of access frequency, and statistical reference of members’ service use.<br/>2. Present status of personal information files<br/>• 1. Personal information file name: Personal information<br/>• Personal information items: E-mail, mobile phone no., company telephone no., title, department, company name, access log, access IP info., and legal representative’s name<br/>• How to collect info.: Website<br/>• Reason for retention: Agreement to personal information use<br/>• Retention period: 3<br/>• Related laws: Records regarding the collection, processing, and use of credit information: 3 years, Records of consumer complaints or dispute settlements: 3 years, Records of contracts or application withdrawal: 5<br/><br><br/>3. Period of personal information processing and retention① “company” processes and retains personal information during the designated period of use as agreed upon with the information object and according to laws concerning the retention and use period of personal information.<br/>② The period of personal information processing and retention depending on the service type is as follows:<br/>• 1.&lt;Civic service&gt;<br/>• Personal information related to &lt;civic service provision&gt; is retained and used for the aforesaid purposes for 3 years from the date of agreement to the collection and use of personal information.<br/>• Reason for retention: Agreement to personal information use<br/>• Related laws: 1) Records of consumer complaints or dispute settlements: 3 years, 2) Records of contracts or application withdrawal: 5<br/>• Reason for exception:<br/><br><br/>4. Provision of personal information to a third party① “company” may provide a third party with personal information only when the personal information object agrees to it and such is in accordance with specific laws or regulations such as Articles 17 and 18 of the Personal Information Protection Act.<br/>② “company” may provide personal information to a third party in the following cases:<br/>• 1. “company”<br/>• Those who are provided with personal information: “company”<br/>• Purpose of the receiver’s use of personal information: E-mail, mobile phone no., company telephone no., title, department, company name, and legal representative’s name<br/>• Purpose of the receiver’s retention and use of personal information: 3<br/><br><br/>5. Rights and duties of the information object and legal representative as well as how to exercise the rights As a personal information object, a user may exercise the following rights:<br/>① An information object may exercise the right to request “company” for opening, correction, deletion, and suspension of use of personal information anytime.<br/>② The act of exercising the rights stated in Paragraph 1 above may be implemented in writing or via e-mail or fax in accordance with Article 41-1 of the Enforcement Ordinance of the Personal Information Protection Act. In response, “company” will take measures accordingly without delay.<br/>③ An information object may exercise the rights stated in Paragraph 1 above through a legal representative or an entrusted individual. In this case, the user shall submit a letter of attorney using Annex Form No. 11 of the Enforcement Regulations of the Personal Information Protection Act.<br/>④ The information object’s right to request opening or suspension of use of personal information may be restricted in accordance with Articles 35-5 and 37-2 of the Personal Information Protection Act.<br/>⑤ As for the correction and deletion of certain personal information items, in case the relevant law specifies such items as a basic requirement, the request for deletion may not be accepted.<br/>⑥ As for the correction and deletion of certain personal information items, in case the relevant law specifies such items as a basic requirement, the request for deletion may not be accepted.<br/><br><br/>6. Personal information items to be handled① “company” handles the following personal information items:<br/>• 1&lt;Civic service&gt;<br/>• Required items: E-mail, mobile phone no., company telephone no., title, department, company name, and legal representative’s name and mobile phone no.<br/>• - Optional items:<br/><br><br/>7. Disposal of Personal Information Once the purpose of handling personal information is fulfilled, “company” destroys the personal information without delay, in principle. Personal information is deleted using the following procedure and method:<br/>-Deletion Procedures<br/>Information that is entered by a user is transferred to a separate database once its purpose is fulfilled (in the case of paper, a separate filing cabinet), and then destroyed after the designated period in accordance with internal directions or related laws on privacy protection. Personal information transferred to a DB is not used for any other purpose unless required by law.-Information DisposalA user’s personal information is destroyed within 5 days of the final date of retention if the retention period expires and within 5 days of the date when the handling of personal information is judged as unnecessary for reasons such as fulfillment of handling personal information, termination of service, completion of business, etc.<br/>-Disposal Method<br/>Personal information saved in electronic file format is deleted by means of a technical method that makes opening the file impossible.<br/><br><br/>8. Installation, operation, and denial of devices automatically collecting personal information<br/>“company” does not use “cookies” that save and frequently load an information object’s use logs.<br/><br><br/>9. Person in charge of protecting personal information<br/>① In order to manage duties regarding personal information as well as handle complaints and remedies, “company” designates the following person in charge of protecting personal information:<br/>• ▶ Person in charge of protecting personal information<br/>• Name:&nbsp;<br/>• Title:&nbsp;<br/>• Position:&nbsp;<br/>• Contact Info.:&nbsp;<br/>② An information object may inquire with the personal information protection manager and responsible department about personal information protection, unsatisfactory service, remedies for damage, etc. regarding the service (business) offered by “company” “company” will provide an answer to such inquiries without delay.<br/><br><br/>10. Change to privacy policy<br/>①The present privacy policy comes into effect on the enforcement date. When there is any addition, deletion, or correction of a provision according to related laws or regulations, such shall be notified at least 7 days before its application.<br/><br><br/>11. Measures for personal information security According to Article 29 of the Personal Information Protection Act, “company” takes technical, managerial, and physical measures for information security as follows:<br/>1. “company” designates the minimal number of employees in charge of handling personal information so that personal information is handled only by the designated individual(s) in charge.2. Technical measures for hacking, etc.<br/>In order to prevent personal information leak or damage due to hacking, computer viruses, etc., “company” installs and regularly updates and checks security programs. “company” installs a security system in a restricted area and supervises it technically and physically.<br/>3. Personal information encryption<br/>A user’s password is encrypted when stored and managed and is known to the user only. For files including vital data, additional security functions such as encryption and file locking are applied.<br/><br><br/>4. Retention of access logs and forgery prevention<br/>Logs of access to the personal information processing system are kept and managed for at least 6 months. Security functions are applied to prevent log forgery, leak, or loss.<br/><br><br/>5. Control of unauthorized individuals’ access<br/>Personal information is kept in a physically separate place, and access control procedures are established and operated.<br/>								</div>
+							</div>
+						</article>	
+						<div class="button-action-row">
+							<button onclick="ajaxUnLoad();" type="button" class="button-primary apply-close-btn">Close</button>
+							<button onclick="sendit();" type="button" class="button-primary">Submit</button>
+						</div>
+					</form>
+				</section>
+			</article>
+		</div>
+	</div>
+</section>
+
+<script>
+	$(document).ready(function() {
+		/* *********************** 개인정보처리방침 토글 ************************ */
+		$(".agree-inner").slideUp();
+		$(".bbs-inquiry-agree-con .agree-txt .more").click(function(){
+			$(".agree-inner").slideToggle();
+			$(".bbs-inquiry-agree-con .more i").toggleClass("rotate");
+		});
+		
+		/* *********************** 첨부파일 Custom ************************ */
+		$(".file-custom-box").each(function  () {
+			var fileTarget = $(this).find(".upload-hidden");
+			
+			fileTarget.on('change', function(){
+				if(window.FileReader){
+					var filename = $(this)[0].files[0].name;
+				} else {
+					var filename = $(this).val().split('/').pop().split('\\').pop();
+				}
+			 
+				$(this).siblings('.upload-name').val(filename);
+			});
+		});
+		
+		/* *********************** Custom Select ************************ */
+		$('.fake-select').fakeselect();
+	});
+</script>
+
+<script>
+
+function sendit(){
+
+	var form = document.form;
+	
+	if(form.name.value==""){
+		alert("Please enter your Full Name.");
+		form.name.focus();
+		return false;
+	}
+	
+	if(form.phone1.value==""){
+		alert("Please enter your Phone Number.");
+		form.phone1.focus();
+		return false;
+	}
+	
+	if(form.phone2.value==""){
+		alert("Please enter your Phone Number.");
+		form.phone2.focus();
+		return false;
+	}
+	
+	if(form.phone3.value==""){
+		alert("Please enter your Phone Number.");
+		form.phone3.focus();
+		return false;
+	}
+	
+	if(form.email1.value==""){
+		alert("Please enter your Email.");
+		form.email1.focus();
+		return false;
+	}
+	
+	if(form.email2.value==""){
+		alert("Please enter your Email.");
+		form.email2.focus();
+		return false;
+	}
+	
+	if(form.subject.value==""){
+		alert("Please enter your Subject.");
+		form.subject.focus();
+		return false;
+	}
+	
+	if(form.content.value==""){
+		alert("Please enter your Message.");
+		form.content.focus();
+		return false;
+	}
+	
+	if(form.bbs_file.value==""){
+		alert("Please enter your Resume.");
+		form.bbs_file.focus();
+		return false;
+	}
+		
+	if(form.num.value==""){
+		alert("Please enter Verification Code.");
+		form.num.focus();
+		return false;
+	}
+	
+	if(form.agree1.checked==false){
+		alert("Please agree to the privacy policy.");
+		form.agree1.focus();
+		return false;
+	}
+	
+	form.submit();
+}
+
+function res(){
+	var f = document.form;
+	if(f.email3.value=="a"){
+	f.email2.readOnly= false;
+	f.email2.value="";
+	f.email2.focus();
+	}else if(f.email3.value=="b"){
+	f.email2.readOnly= false;
+	f.email2.value="";
+	}else{
+	f.email2.readOnly= false;
+	f.email2.value=f.email3.value;
+	}
+}
+
+</script>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DPD 관리자 로그인</title>
+  <link rel="stylesheet" href="../assets/css/admin-system.css">
+  <link rel="stylesheet" href="../assets/css/admin-icons.css">
+  <link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body class="cms-body cms-login-page">
+  <main class="cms-login-card" aria-labelledby="cmsLoginTitle">
+    <div class="cms-login-brand">
+      <img src="../assets/images/dpd/logo-p.svg" alt="DPD">
+      <span>CMS</span>
+    </div>
+    <h1 id="cmsLoginTitle" class="cms-login-title">관리자 로그인</h1>
+    <form id="cmsLoginForm" autocomplete="off">
+      <div class="cms-form-group">
+        <label class="cms-label" for="cmsLoginId">아이디</label>
+        <input class="cms-input" type="text" id="cmsLoginId" name="id" value="admin" required>
+      </div>
+      <div class="cms-form-group">
+        <label class="cms-label" for="cmsLoginPassword">비밀번호</label>
+        <input class="cms-input" type="password" id="cmsLoginPassword" name="password" required>
+      </div>
+      <button class="cms-button cms-button--wide" type="submit">
+        <i class="ri-login-circle-line" aria-hidden="true"></i>
+        <span>로그인</span>
+      </button>
+      <p class="cms-login-help">프론트엔드 전용 로그인입니다. 백엔드 연결 전까지 입력 데이터는 현재 브라우저에 저장됩니다.</p>
+      <p class="cms-error" id="cmsLoginError" aria-live="polite"></p>
+    </form>
+  </main>
+  <div class="cms-toast" id="cmsToast" role="status" aria-live="polite"></div>
+  <script src="../assets/js/cms-store.js"></script>
+  <script src="../assets/js/cms-admin.js"></script>
+</body>
+</html>

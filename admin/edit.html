@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DPD 콘텐츠 입력</title>
+  <link rel="stylesheet" href="../assets/css/admin-system.css">
+  <link rel="stylesheet" href="../assets/css/admin-icons.css">
+  <link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body class="cms-body">
+  <div class="cms-shell">
+    <aside class="cms-sidebar">
+      <div class="cms-sidebar-logo">
+        <img src="../assets/images/dpd/logo-p.svg" alt="DPD">
+        <span>CMS</span>
+      </div>
+      <nav class="cms-nav" aria-label="관리 메뉴">
+        <button type="button" data-cms-section="dashboard"><i class="ri-dashboard-3-line" aria-hidden="true"></i><span>대시보드</span></button>
+        <button type="button" data-cms-section="mainHero"><i class="ri-slideshow-3-line" aria-hidden="true"></i><span>메인 히어로</span></button>
+        <button type="button" data-cms-section="developmentItems"><i class="ri-tools-line" aria-hidden="true"></i><span>개발품목</span></button>
+        <button type="button" data-cms-section="handledItems"><i class="ri-box-3-line" aria-hidden="true"></i><span>공급품목</span></button>
+        <button type="button" data-cms-section="customers"><i class="ri-building-4-line" aria-hidden="true"></i><span>고객사</span></button>
+        <button type="button" data-cms-section="resources"><i class="ri-file-list-3-line" aria-hidden="true"></i><span>자료실</span></button>
+        <button type="button" data-cms-section="notices"><i class="ri-notification-3-line" aria-hidden="true"></i><span>공지사항</span></button>
+        <button type="button" data-cms-section="contactForms"><i class="ri-mail-send-line" aria-hidden="true"></i><span>컨택폼</span></button>
+      </nav>
+      <div class="cms-sidebar-bottom">
+        <button class="cms-button cms-button--ghost cms-button--wide" type="button" id="cmsLogoutBtn">
+          <i class="ri-logout-circle-line" aria-hidden="true"></i>
+          <span>로그아웃</span>
+        </button>
+      </div>
+    </aside>
+    <main class="cms-main">
+      <header class="cms-topbar">
+        <div>
+          <span class="cms-kicker">DPD CONTENT DATABASE</span>
+          <h1 class="cms-title" id="cmsPageTitle">콘텐츠 입력</h1>
+        </div>
+        <div class="cms-topbar-actions">
+          <a class="cms-button cms-button--ghost" href="index.html" id="cmsBackLink">
+            <i class="ri-list-check-2" aria-hidden="true"></i>
+            <span>목록으로</span>
+          </a>
+          <a class="cms-button cms-button--info" href="../index.html" target="_blank" rel="noopener">
+            <i class="ri-external-link-line" aria-hidden="true"></i>
+            <span>프론트 보기</span>
+          </a>
+        </div>
+      </header>
+
+      <section class="cms-grid cms-grid--editor" aria-label="콘텐츠 입력">
+        <article class="cms-panel cms-editor-panel">
+          <div class="cms-editor-head">
+            <h2 id="cmsEditorTitle">항목 편집</h2>
+          </div>
+          <form id="cmsEditorForm">
+            <div class="cms-field-grid" id="cmsEditorFields"></div>
+            <div class="cms-editor-actions">
+              <button class="cms-button cms-button--ghost" type="button" id="cmsMoveUpBtn">
+                <i class="ri-arrow-up-line" aria-hidden="true"></i>
+                <span>위로</span>
+              </button>
+              <button class="cms-button cms-button--ghost" type="button" id="cmsMoveDownBtn">
+                <i class="ri-arrow-down-line" aria-hidden="true"></i>
+                <span>아래로</span>
+              </button>
+              <button class="cms-button cms-button--danger" type="button" id="cmsDeleteBtn">
+                <i class="ri-delete-bin-line" aria-hidden="true"></i>
+                <span>삭제</span>
+              </button>
+              <button class="cms-button cms-button--success" type="submit">
+                <i class="ri-save-3-line" aria-hidden="true"></i>
+                <span>저장</span>
+              </button>
+            </div>
+          </form>
+        </article>
+      </section>
+    </main>
+  </div>
+  <div class="cms-toast" id="cmsToast" role="status" aria-live="polite"></div>
+  <script src="../assets/js/cms-store.js"></script>
+  <script type="module" src="../assets/js/cms-tiptap.js"></script>
+  <script src="../assets/js/cms-admin.js"></script>
+</body>
+</html>
