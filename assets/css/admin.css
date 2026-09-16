@@ -1569,7 +1569,7 @@
 
 .cms-json-panel textarea {
   min-height: 240px;
-  font-family: Consolas, monospace;
+  font-family: var(--font-family-mono);
 }
 
 .cms-toast {

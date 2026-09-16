@@ -33,7 +33,9 @@
     return Number.isFinite(parsed) ? parsed : fallback;
   };
   const getLangLabels = () => {
-    const isKo = root.lang?.toLowerCase().startsWith("ko") || location.pathname.includes("/kr/");
+    // 영문 화면도 /kr/ 경로를 그대로 쓰므로 경로만으로는 판별할 수 없다.
+    // i18n.js 가 알려주는 값을 우선 쓰고, 없으면 html lang 으로 판단한다.
+    const isKo = window.DPD_I18N ? !window.DPD_I18N.isEnglish : !root.lang?.toLowerCase().startsWith("en");
     return {
       close: isKo ? "닫기" : "Close",
       previous: isKo ? "이전" : "Previous",
@@ -41,7 +43,7 @@
       play: isKo ? "재생" : "Play",
       pause: isKo ? "일시정지" : "Pause",
       viewImage: isKo ? "이미지 보기" : "View image",
-      gallery: isKo ? "취급품목 이미지 갤러리" : "Handled item image gallery",
+      gallery: isKo ? "공급품목 이미지 갤러리" : "Supply item image gallery",
       mainItems: isKo ? "주요 품목" : "Main items",
       relatedImage: isKo ? "관련 이미지" : "related image",
       fileType: isKo ? "{type} 파일" : "{type} file"

@@ -2,8 +2,8 @@ import { access, readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 
 const root = process.cwd();
-const siteEntries = ["index.html", "kr", "en"];
-const cssEntries = ["css"];
+const siteEntries = ["index.html", "kr", "en", "admin"];
+const cssEntries = ["assets/css"];
 const referenceHosts = new Set([
   "nextaerospace.co.kr",
   "www.nextaerospace.co.kr",
@@ -15,6 +15,16 @@ const referenceHosts = new Set([
   "www.hnjcorp.co.kr"
 ]);
 const ignoredSchemes = /^(?:#|mailto:|tel:|javascript:|data:|blob:|sms:)/i;
+// archive/ 는 리팩터링 전 원본 CSS 보관용이라 배포 대상이 아니다.
+const skippedDirs = new Set([".git", "node_modules", "archive"]);
+// 언어 전환 링크는 현재 경로에 ?lang= 만 붙이므로 파일이 따로 없다.
+const languageQuery = /^\?lang=[a-z-]+$/i;
+// DPD 이전 템플릿과 외부 플러그인에서 넘어온 이미지 경로.
+// images/content, images/board : 이관하지 않은 템플릿 이미지 트리
+// images/icon/spotlight : Spotlight 라이트박스용 아이콘 (현재 라이트박스는 자체 구현)
+// mCSB_buttons.png : mCustomScrollbar 스크롤 버튼 스프라이트 (버튼 미사용)
+// 살아있는 화면에서 쓰지 않으므로 실패가 아니라 정리 대상으로만 보고한다.
+const legacyTemplateAsset = /(?:^|\/)(?:images\/(?:content|board)\/|images\/icon\/spotlight\/)|^mCSB_buttons\.png$/;
 const htmlFiles = [];
 const cssFiles = [];
 
@@ -30,7 +40,7 @@ async function exists(absPath) {
 async function collectHtmlFiles(dir) {
   const entries = await readdir(dir, { withFileTypes: true });
   for (const entry of entries) {
-    if (entry.name === ".git" || entry.name === "node_modules") continue;
+    if (skippedDirs.has(entry.name)) continue;
     const abs = path.join(dir, entry.name);
     if (entry.isDirectory()) {
       await collectHtmlFiles(abs);
@@ -43,7 +53,7 @@ async function collectHtmlFiles(dir) {
 async function collectCssFiles(dir) {
   const entries = await readdir(dir, { withFileTypes: true });
   for (const entry of entries) {
-    if (entry.name === ".git" || entry.name === "node_modules") continue;
+    if (skippedDirs.has(entry.name)) continue;
     const abs = path.join(dir, entry.name);
     if (entry.isDirectory()) {
       await collectCssFiles(abs);
@@ -84,6 +94,7 @@ async function resolveLocalRef(rawValue, fileAbsPath) {
     return isExternalAllowed(url) ? null : { type: "unsupported", target: value };
   }
   if (/^[a-z][a-z0-9+.-]*:/i.test(value)) return null;
+  if (languageQuery.test(value)) return null;
   if (value.startsWith("?")) return { type: "queryOnly", target: value };
 
   const localTarget = stripHashAndSearch(value);
@@ -94,6 +105,7 @@ async function resolveLocalRef(rawValue, fileAbsPath) {
   const absTarget = path.resolve(value.startsWith("/") ? root : baseDir, value.startsWith("/") ? value.slice(1) : localTarget);
   if (await exists(absTarget)) return null;
   if (await exists(path.join(absTarget, "index.html"))) return null;
+  if (legacyTemplateAsset.test(localTarget)) return { type: "legacyTemplate", target: value };
   return { type: "missing", target: value, resolved: absTarget };
 }
 
@@ -117,8 +129,11 @@ const issues = {
   queryOnly: [],
   missing: [],
   unsupported: [],
-  textInternalOrigins: []
+  textInternalOrigins: [],
+  legacyTemplate: []
 };
+// 실패로 취급하지 않고 보고만 하는 항목.
+const warningTypes = new Set(["legacyTemplate"]);
 
 const attrPattern = /\b(?:href|src|poster|action|formaction|data-src|data-url|data-pc-img|data-m-img|data-bg|data-image|data-gallery|data-cursor-src|data-video)=["']([^"']*)["']/gi;
 const srcsetPattern = /\bsrcset=["']([^"']*)["']/gi;
@@ -160,9 +175,9 @@ for (const file of cssFiles) {
 
 let total = 0;
 for (const [name, found] of Object.entries(issues)) {
-  total += found.length;
-  console.log(`${name}: ${found.length}`);
-  if (found.length) console.log(found.slice(0, 40).join("\n"));
+  if (!warningTypes.has(name)) total += found.length;
+  console.log(`${name}: ${found.length}${warningTypes.has(name) ? " (warning)" : ""}`);
+  if (found.length && !warningTypes.has(name)) console.log(found.slice(0, 40).join("\n"));
 }
 
 if (total) {

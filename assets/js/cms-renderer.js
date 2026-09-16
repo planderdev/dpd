@@ -567,9 +567,8 @@
     renderAll();
   }
 
-  window.addEventListener("storage", function (event) {
-    if (event.key === store.touchKey) {
-      window.location.reload();
-    }
+  // 저장 위치는 store 가 정한다. 다른 탭에서 내용이 바뀌면 알림만 받아 새로 그린다.
+  store.subscribe(function () {
+    window.location.reload();
   });
 })(window, document);

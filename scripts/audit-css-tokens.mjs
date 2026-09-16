@@ -2,8 +2,17 @@ import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 
 const root = process.cwd();
-const cssRoots = ["css"];
-const skipFiles = new Set(["css/design-system.css", "css/remixicon.css"]);
+const cssRoots = ["assets/css"];
+// 토큰 정의 파일과 아이콘 폰트, 외부 플러그인 원본, 리팩터링 전 보관본은 검사 대상이 아니다.
+const skipFiles = new Set([
+  "assets/css/tokens.css",
+  "assets/css/admin-system.css",
+  "assets/css/icons.css",
+  "assets/css/admin-icons.css",
+  "assets/css/swiper.css",
+  "assets/css/vendors.css"
+]);
+const skipDirs = new Set(["archive"]);
 
 async function listCssFiles(dir) {
   const out = [];
@@ -15,7 +24,7 @@ async function listCssFiles(dir) {
   }
   for (const entry of entries) {
     const rel = path.posix.join(dir.replaceAll("\\", "/"), entry.name);
-    if (entry.isDirectory()) out.push(...await listCssFiles(rel));
+    if (entry.isDirectory() && !skipDirs.has(entry.name)) out.push(...await listCssFiles(rel));
     if (entry.isFile() && entry.name.endsWith(".css") && !skipFiles.has(rel)) out.push(rel);
   }
   return out;
@@ -41,30 +50,32 @@ function hasRawLength(value) {
   return /(^|[\s(,])-?\d*\.?\d+(px|rem|em)\b/i.test(value.replace(/var\([^)]*\)/g, ""));
 }
 
+// 토큰 이름은 계속 늘어나므로 특정 이름이 아니라 var() 사용 여부를 본다.
+// 아이콘 폰트는 폰트 패밀리 이름 자체가 식별자라 예외로 둔다.
 function isFontFamilyTokenized(value) {
-  return /(var\(--font-sans\)|xeicon|remixicon|swiper-icons|material[-\s]?icons)/i.test(value);
+  return /(var\(--|xeicon|remixicon|swiper-icons|material[-\s]?icons)/i.test(value);
 }
 
 function isFontSizeTokenized(value) {
-  return /^(0|inherit|initial|unset|var\(--font-size-|var\(--root-font-size-|var\(--board-[a-z-]*font-size\)|var\(--swiper-navigation-size\))/i.test(value.trim());
+  return /^(0|inherit|initial|unset|var\(--)/i.test(value.trim());
 }
 
 function isFontWeightTokenized(value) {
-  return /^(inherit|initial|unset|var\(--font-weight-)/i.test(value.trim());
+  return /^(inherit|initial|unset|var\(--)/i.test(value.trim());
 }
 
 function isLetterSpacingTokenized(value) {
-  return /^(inherit|initial|unset|var\(--tracking-)/i.test(value.trim());
+  return /^(normal|inherit|initial|unset|var\(--)/i.test(value.trim());
 }
 
 function isLineHeightTokenized(value) {
-  return /^(inherit|initial|unset|var\(--leading-)/i.test(value.trim());
+  return /^(normal|inherit|initial|unset|var\(--)/i.test(value.trim());
 }
 
 function isRadiusTokenized(value) {
   const clean = value.replace(/!important/gi, "").trim();
   if (hasRawLength(clean) || /%/.test(clean)) return false;
-  return clean.split(/\s+/).every((part) => /^(0|inherit|initial|unset|var\(--radius-|calc\(var\(--radius-)/i.test(part));
+  return clean.split(/\s+/).every((part) => /^(0|inherit|initial|unset|var\(--|calc\(var\(--)/i.test(part));
 }
 
 const spacingProps = /^(margin|padding|gap|row-gap|column-gap|grid-gap|grid-row-gap|grid-column-gap)(-(top|right|bottom|left))?$/i;
