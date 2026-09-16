@@ -2,61 +2,47 @@ import { readdir, readFile, stat } from "node:fs/promises";
 import path from "node:path";
 
 const root = process.cwd();
-const htmlRoots = ["index.html", "kr", "en"];
+// en/ 하위는 i18n.js 가 kr/<경로>?lang=en 으로 리다이렉트시키는 구버전 잔재라
+// 헤더 마크업을 유지하지 않는다. 감사 대상은 실제로 서비스되는 국문 화면이다.
+const htmlRoots = ["index.html", "kr"];
 
-function isEnglish(rel) {
-  return rel === "en/index.html" || rel.startsWith("en/");
-}
+// 헤더 GNB 기준값. gnb1~gnb7 순서와 2차 메뉴까지 1:1로 맞춘다.
+const NAV = [
+  ["회사소개", ["인사말", "회사개요", "경영이념", "회사연혁", "인증 및 지적재산권", "오시는길"]],
+  ["개발품목", []],
+  ["공급품목", []],
+  ["기술지원", ["솔루션", "해외 네트워크"]],
+  ["고객사", []],
+  ["자료실", ["도면자료", "카탈로그 & 기술자료"]],
+  ["공지사항", []]
+];
 
-function navItems(rel) {
-  if (isEnglish(rel)) {
-    return [
-      ["Company", ["CEO Message", "Overview", "Management Philosophy", "History", "Certificates & IP", "Location"]],
-      ["Development Items", []],
-      ["Handled Items", []],
-      ["Resources", ["Drawings", "Catalogs & Technical Resources"]],
-      ["Notice", []],
-    ];
-  }
-  return [
-    ["회사소개", ["인사말", "회사개요", "경영이념", "회사연혁", "인증 및 지적재산권", "오시는길"]],
-    ["개발품목", []],
-    ["취급품목", []],
-    ["자료실", ["도면자료", "카탈로그 & 기술자료"]],
-    ["공지사항", []],
-  ];
-}
+// 페이지 경로 -> [dep1, dep2]. dep1 은 대메뉴 순번(1부터), dep2 는 2차 메뉴 순번.
+// 대메뉴에 2차 메뉴가 없으면 dep2 는 1을 쓴다. 헤더 하이라이트가 없는 화면은 0,0.
+const PAGE_STATE = [
+  [/^kr\/company\/greeting\.html$/, 1, 1],
+  [/^kr\/company\/outline\.html$/, 1, 2],
+  [/^kr\/company\/vision\.html$/, 1, 3],
+  [/^kr\/company\/history\.html$/, 1, 4],
+  [/^kr\/company\/certificate\.html$/, 1, 5],
+  [/^kr\/company\/location\.html$/, 1, 6],
+  [/^kr\/company\//, 1, 1],
+  [/^kr\/product\//, 2, 1],
+  [/^kr\/business\//, 3, 1],
+  [/^kr\/support\/solution\.html$/, 4, 1],
+  [/^kr\/support\/network\.html$/, 4, 2],
+  [/^kr\/customer\//, 5, 1],
+  [/^kr\/ir\//, 6, 1],
+  [/^kr\/pr\/library/, 6, 2],
+  [/^kr\/pr\//, 7, 1],
+  // 견적문의, 채용, 약관/개인정보는 대메뉴에 대응하는 항목이 없다.
+  [/^kr\/(?:contact|careers|etc)\//, 0, 0],
+  [/^index\.html$/, 0, 0]
+];
 
-function stateFor(rel) {
-  if (rel === "index.html" || rel === "en/index.html") return null;
-  if (!/^(kr|en)\//.test(rel)) return null;
-  const page = rel.replace(/^(kr|en)\//, "");
-  const direct = [
-    [/^company\/greeting\.html$/, 0, 0],
-    [/^company\/outline\.html$/, 0, 1],
-    [/^company\/vision\.html$/, 0, 2],
-    [/^company\/history\.html$/, 0, 3],
-    [/^company\/certificate\.html$/, 0, 4],
-    [/^company\/location\.html$/, 0, 5],
-    [/^business\/intro\.html$/, 2, 0],
-    [/^business\/uav\.html$/, 2, 1],
-    [/^business\/uam\.html$/, 2, 2],
-    [/^business\/lsa\.html$/, 2, 3],
-    [/^business\/si\.html$/, 2, 4],
-    [/^business\/robot\.html$/, 2, 5],
-  ];
-  const found = direct.find(([pattern]) => pattern.test(page));
-  if (found) return { sectionIndex: found[1], subIndex: found[2] };
-  if (/^company\//.test(page)) return { sectionIndex: 0, subIndex: 0 };
-  if (/^product\/nv_/.test(page)) return { sectionIndex: 1, subIndex: 0 };
-  if (/^product\/nl_/.test(page)) return { sectionIndex: 1, subIndex: 1 };
-  if (/^product\/nm_/.test(page)) return { sectionIndex: 1, subIndex: 2 };
-  if (/^product\/kla_/.test(page)) return { sectionIndex: 1, subIndex: 3 };
-  if (/^business\//.test(page)) return { sectionIndex: 2, subIndex: 0 };
-  if (/^ir\//.test(page)) return { sectionIndex: 3, subIndex: 0 };
-  if (/^pr\/library/.test(page)) return { sectionIndex: 3, subIndex: 1 };
-  if (/^pr\//.test(page)) return { sectionIndex: 4, subIndex: 0 };
-  return null;
+function expectedState(rel) {
+  const found = PAGE_STATE.find(([pattern]) => pattern.test(rel));
+  return found ? { dep1: found[1], dep2: found[2] } : null;
 }
 
 function cleanRel(file) {
@@ -65,8 +51,7 @@ function cleanRel(file) {
 
 async function collectHtml(entry) {
   const abs = path.join(root, entry);
-  const info = await stat(abs);
-  if (info.isFile()) return [abs];
+  if ((await stat(abs)).isFile()) return [abs];
   const files = [];
   async function walk(dir) {
     for (const item of await readdir(dir, { withFileTypes: true })) {
@@ -87,12 +72,12 @@ function sameList(a, b) {
   return a.length === b.length && a.every((item, index) => item === b[index]);
 }
 
+// 주석 처리된 선언(// dep1 = 06)을 집지 않도록 줄 시작에서만 찾는다.
 function dep(html, name) {
   const match = html.match(new RegExp(`^\\s*${name}\\s*=\\s*([^,;\\r\\n]+)`, "m"));
   if (!match) return null;
   const value = match[1].replace(/["']/g, "").trim();
-  if (value === "") return 0;
-  return Number(value);
+  return value === "" ? 0 : Number(value);
 }
 
 function gnbState(html) {
@@ -108,83 +93,41 @@ function gnbState(html) {
   });
 }
 
-function subMenuState(html) {
-  const pc = html.match(/<aside id="topMenu03"[\s\S]*?<\/aside>/)?.[0] ?? "";
-  const pcList = pc.match(/<ul class="snb[^"]*">([\s\S]*?)<\/ul>/)?.[1] ?? "";
-  const mobile = html.match(/<aside id="topMenuM"[\s\S]*?<\/aside>/)?.[0] ?? "";
-  const mobileList = mobile.match(/<ul class="location-menu-con[^"]*">([\s\S]*?)<\/ul>/)?.[1] ?? "";
-  return {
-    hasPc: Boolean(pc),
-    hasMobile: Boolean(mobile),
-    pcLabels: [...pcList.matchAll(/<span>([\s\S]*?)<\/span>/g)].map((m) => strip(m[1])),
-    mobileCurrent: strip(mobile.match(/<button class="cur-location[\s\S]*?<span>([\s\S]*?)<\/span>/)?.[1] ?? ""),
-    mobileLabels: [...mobileList.matchAll(/<span>([\s\S]*?)<\/span>/g)].map((m) => strip(m[1])),
-  };
-}
-
 const files = (await Promise.all(htmlRoots.map(collectHtml))).flat();
 const issues = [];
-const sectionsWithoutLocalSubMenu = new Set([0, 1, 2, 3, 4]);
+let checked = 0;
 
 for (const file of files) {
   const rel = cleanRel(file);
   const html = await readFile(file, "utf8");
-  const expectedNav = navItems(rel);
   const gnb = gnbState(html);
-  const state = stateFor(rel);
-
   if (!gnb) continue;
+  checked++;
 
-  if (gnb) {
-    const topLabels = gnb.map((item) => item.label);
-    if (!sameList(topLabels, expectedNav.map((item) => item[0]))) {
-      issues.push(`${rel}: header top labels mismatch: ${topLabels.join(" | ")}`);
-    }
-    gnb.forEach((item, index) => {
-      const expected = expectedNav[index]?.[1] ?? [];
-      if (!sameList(item.subLabels, expected)) {
-        issues.push(`${rel}: header submenu ${index + 1} mismatch: ${item.subLabels.join(" | ")}`);
-      }
-    });
+  const topLabels = gnb.map((item) => item.label);
+  if (!sameList(topLabels, NAV.map((item) => item[0]))) {
+    issues.push(`${rel}: header top labels mismatch: ${topLabels.join(" | ")}`);
   }
-
-  const actualDep1 = dep(html, "dep1");
-  const actualDep2 = dep(html, "dep2");
-  const expectedDep1 = state ? state.sectionIndex + 1 : 0;
-  const expectedDep2 = state ? state.subIndex + 1 : 0;
-  if (actualDep1 !== null && actualDep1 !== expectedDep1) {
-    issues.push(`${rel}: dep1 ${actualDep1} != ${expectedDep1}`);
-  }
-  if (actualDep2 !== null && actualDep2 !== expectedDep2) {
-    issues.push(`${rel}: dep2 ${actualDep2} != ${expectedDep2}`);
-  }
-
-  const sub = subMenuState(html);
-  if (state) {
-    if (sectionsWithoutLocalSubMenu.has(state.sectionIndex)) {
-      if (sub.hasPc || sub.hasMobile) {
-        issues.push(`${rel}: unexpected local sub navigation`);
-      }
-      continue;
+  gnb.forEach((item, index) => {
+    const expected = NAV[index]?.[1] ?? [];
+    if (!sameList(item.subLabels, expected)) {
+      issues.push(`${rel}: header submenu ${index + 1} mismatch: ${item.subLabels.join(" | ")}`);
     }
+  });
 
-    const expectedSubs = expectedNav[state.sectionIndex][1];
-    const expectedCurrent = expectedSubs[state.subIndex];
-    if (!sub.hasPc || !sub.hasMobile) {
-      issues.push(`${rel}: missing local sub navigation`);
-    } else {
-      if (!sameList(sub.pcLabels, expectedSubs)) {
-        issues.push(`${rel}: PC submenu mismatch: ${sub.pcLabels.join(" | ")}`);
-      }
-      if (sub.mobileCurrent !== expectedCurrent) {
-        issues.push(`${rel}: mobile current "${sub.mobileCurrent}" != "${expectedCurrent}"`);
-      }
-      if (!sameList(sub.mobileLabels, expectedSubs)) {
-        issues.push(`${rel}: mobile submenu mismatch: ${sub.mobileLabels.join(" | ")}`);
-      }
-    }
-  } else if (rel.endsWith(".html") && !rel.includes("/etc/") && !/^(?:kr|en)\/(?:careers|contact)\//.test(rel) && rel !== "index.html" && rel !== "en/index.html") {
+  const state = expectedState(rel);
+  if (!state) {
     issues.push(`${rel}: no expected navigation state`);
+  } else {
+    const actual1 = dep(html, "dep1");
+    const actual2 = dep(html, "dep2");
+    if (actual1 !== null && actual1 !== state.dep1) issues.push(`${rel}: dep1 ${actual1} != ${state.dep1}`);
+    if (actual2 !== null && actual2 !== state.dep2) issues.push(`${rel}: dep2 ${actual2} != ${state.dep2}`);
+  }
+
+  // 현재 디자인에는 페이지 내 서브 네비게이션이 없다. 되살아나면 기준값을 함께 갱신해야 한다.
+  if (/<aside id="topMenu03"|<aside id="topMenuM"/.test(html)) {
+    issues.push(`${rel}: unexpected local sub navigation`);
   }
 }
 
@@ -194,4 +137,4 @@ if (issues.length) {
   process.exit(1);
 }
 
-console.log(`Navigation audit passed for ${files.length} HTML file(s).`);
+console.log(`Navigation audit passed for ${checked} HTML file(s) with a header.`);

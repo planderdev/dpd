@@ -575,13 +575,78 @@
     return next;
   };
 
+  /* ────────────────────────────────────────────────────────────────
+   * 저장 어댑터
+   *
+   * 저장 위치에 관한 지식은 전부 이 아래에만 둔다. 화면 코드(cms-admin.js,
+   * cms-renderer.js)는 DpdCmsStore 의 메서드만 쓰므로, 백엔드가 붙으면
+   * 같은 모양의 어댑터를 만들어 DpdCmsStore.useAdapter() 로 갈아끼우면 된다.
+   *
+   * 어댑터가 갖춰야 할 것
+   *   name           : 로그에 찍히는 식별자
+   *   hydrate()      : 첫 사용 전에 데이터를 준비한다. Promise 를 돌려준다.
+   *   read()         : 저장된 데이터베이스 객체 또는 null 을 즉시 돌려준다.
+   *   write(db)      : 데이터베이스를 저장한다.
+   *   clear()        : 저장분을 지운다.
+   *   readSession()  : 로그인 세션 객체 또는 null.
+   *   writeSession(s): 로그인 세션을 저장한다.
+   *   clearSession() : 로그인 세션을 지운다.
+   *   authenticate(id, password) : 자격 증명 확인 결과(boolean).
+   *   subscribe(fn)  : 다른 탭/사용자의 변경을 알린다. 해지 함수를 돌려준다.
+   *
+   * read() 와 write() 는 동기 호출이다. API 어댑터는 hydrate() 에서 서버
+   * 응답을 받아 메모리에 들고 있다가 read() 로 돌려주고, write() 는 메모리를
+   * 갱신한 뒤 전송을 시작하는 방식으로 맞추면 된다.
+   * ──────────────────────────────────────────────────────────────── */
+
+  var localStorageAdapter = {
+    name: "localStorage",
+    hydrate: function () {
+      return Promise.resolve();
+    },
+    read: function () {
+      var raw = window.localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : null;
+    },
+    write: function (database) {
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(database));
+      window.localStorage.setItem(TOUCH_KEY, String(Date.now()));
+    },
+    clear: function () {
+      window.localStorage.removeItem(STORAGE_KEY);
+      window.localStorage.setItem(TOUCH_KEY, String(Date.now()));
+    },
+    readSession: function () {
+      var raw = window.localStorage.getItem(SESSION_KEY);
+      return raw ? JSON.parse(raw) : null;
+    },
+    writeSession: function (session) {
+      window.localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+    },
+    clearSession: function () {
+      window.localStorage.removeItem(SESSION_KEY);
+    },
+    authenticate: function (id, password) {
+      return id === ADMIN_ID && password === ADMIN_PASSWORD;
+    },
+    subscribe: function (handler) {
+      var listener = function (event) {
+        if (event.key === TOUCH_KEY) handler();
+      };
+      window.addEventListener("storage", listener);
+      return function () {
+        window.removeEventListener("storage", listener);
+      };
+    }
+  };
+
+  var adapter = localStorageAdapter;
+
   var readStoredData = function () {
     try {
-      var raw = window.localStorage.getItem(STORAGE_KEY);
-      if (!raw) return clone(defaultData);
-      return normalizeDatabase(JSON.parse(raw));
+      return normalizeDatabase(adapter.read());
     } catch (error) {
-      console.warn("CMS database read failed:", error);
+      console.warn("CMS database read failed (" + adapter.name + "):", error);
       return clone(defaultData);
     }
   };
@@ -589,8 +654,7 @@
   var writeStoredData = function (database) {
     var next = normalizeDatabase(database);
     next.updatedAt = now();
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-    window.localStorage.setItem(TOUCH_KEY, String(Date.now()));
+    adapter.write(next);
     return clone(next);
   };
 
@@ -608,9 +672,7 @@
 
   var isLoggedIn = function () {
     try {
-      var raw = window.localStorage.getItem(SESSION_KEY);
-      if (!raw) return false;
-      var session = JSON.parse(raw);
+      var session = adapter.readSession();
       return Boolean(session && session.loggedIn && session.expiresAt > Date.now());
     } catch (error) {
       return false;
@@ -618,17 +680,17 @@
   };
 
   var login = function (id, password) {
-    if (id !== ADMIN_ID || password !== ADMIN_PASSWORD) return false;
-    window.localStorage.setItem(SESSION_KEY, JSON.stringify({
+    if (!adapter.authenticate(id, password)) return false;
+    adapter.writeSession({
       loggedIn: true,
       loggedAt: Date.now(),
       expiresAt: Date.now() + 1000 * 60 * 60 * 12
-    }));
+    });
     return true;
   };
 
   var logout = function () {
-    window.localStorage.removeItem(SESSION_KEY);
+    adapter.clearSession();
   };
 
   window.DPD_CMS_DEFAULT_DATA = clone(defaultData);
@@ -644,8 +706,7 @@
     getData: readStoredData,
     saveData: writeStoredData,
     resetData: function () {
-      window.localStorage.removeItem(STORAGE_KEY);
-      window.localStorage.setItem(TOUCH_KEY, String(Date.now()));
+      adapter.clear();
       return clone(defaultData);
     },
     getCollection: function (collectionKey) {
@@ -660,6 +721,30 @@
     createId: createId,
     login: login,
     logout: logout,
-    isLoggedIn: isLoggedIn
+    isLoggedIn: isLoggedIn,
+    // 현재 어댑터 이름. 화면에서 저장 위치를 표시할 때 쓴다.
+    get adapterName() {
+      return adapter.name;
+    },
+    // 백엔드 어댑터로 교체한다. 교체 후 ready() 를 다시 기다려야 한다.
+    useAdapter: function (next) {
+      if (next) adapter = next;
+      return adapter;
+    },
+    // 첫 읽기 전에 기다린다. localStorage 어댑터에서는 즉시 끝난다.
+    ready: function () {
+      try {
+        return Promise.resolve(adapter.hydrate());
+      } catch (error) {
+        return Promise.reject(error);
+      }
+    },
+    // 다른 탭이나 다른 관리자가 저장했을 때 알림을 받는다. 해지 함수를 돌려준다.
+    subscribe: function (handler) {
+      if (typeof handler !== "function" || typeof adapter.subscribe !== "function") {
+        return function () {};
+      }
+      return adapter.subscribe(handler);
+    }
   };
 })(window);

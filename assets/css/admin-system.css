@@ -8,6 +8,8 @@
 
 :root {
   --font-family-primary: "SUIT", "Pretendard", "Noto Sans KR", Arial, sans-serif;
+  /* JSON 원본을 보여주는 입력창처럼 고정폭이 필요한 곳에서만 사용한다. */
+  --font-family-mono: Consolas, "D2Coding", "Courier New", monospace;
   --font-size-12: 12px;
   --font-size-13: 13px;
   --font-size-14: 14px;

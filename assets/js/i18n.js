@@ -58,6 +58,10 @@
     return !tag || ["SCRIPT", "STYLE", "NOSCRIPT", "TEMPLATE", "SVG", "PATH", "VIDEO", "SOURCE"].includes(tag);
   };
 
+  // 페이지 데이터는 마크업이 바뀌면 셀렉터가 다른 노드를 가리킬 수 있으므로
+  // 저장된 한국어 원문과 일치할 때만 영문으로 교체한다.
+  const matchesSource = (current, source) => source === undefined || current === clean(source);
+
   const applyPageData = () => {
     const page = data.pages?.[pageKey()];
     const manualTitle = data.manual?.titles?.[doc.title];
@@ -71,12 +75,36 @@
     (page?.text || []).forEach((entry) => {
       const parent = doc.querySelector(entry.selector);
       const node = nonEmptyTextNodes(parent)[entry.index];
+      if (!node || !matchesSource(clean(node.nodeValue), entry.ko)) return;
       setTrimmedNodeValue(node, entry.en);
     });
     (page?.attrs || []).forEach((entry) => {
       const node = doc.querySelector(entry.selector);
-      if (node) node.setAttribute(entry.attr, entry.en);
+      if (!node || !matchesSource(clean(node.getAttribute(entry.attr)), entry.ko)) return;
+      node.setAttribute(entry.attr, entry.en);
     });
+  };
+
+  // aria-label / alt 중에는 품목명을 끼워 만든 문구가 많아 사전으로는 다 담을 수 없다.
+  // 패턴으로 껍데기를 번역하고, 잡아낸 이름은 다시 사전을 거친다.
+  const attrPatterns = (data.manual?.attrPatterns || []).map((rule) => ({
+    matcher: new RegExp(rule.match),
+    en: rule.en
+  }));
+
+  const translateAttrValue = (value, map) => {
+    if (!value) return "";
+    if (map[value]) return map[value];
+    for (const { matcher, en } of attrPatterns) {
+      const found = value.match(matcher);
+      if (!found) continue;
+      return en.replace(/\$(\d)/g, (whole, index) => {
+        const part = clean(found[Number(index)]);
+        if (!part) return whole;
+        return map[part] || part;
+      });
+    }
+    return "";
   };
 
   const applyManualDictionary = () => {
@@ -95,7 +123,8 @@
     doc.querySelectorAll("[title], [aria-label], [alt], [placeholder], [value]").forEach((node) => {
       ["title", "aria-label", "alt", "placeholder", "value"].forEach((attr) => {
         const value = clean(node.getAttribute(attr));
-        if (attrMap[value]) node.setAttribute(attr, attrMap[value]);
+        const translated = translateAttrValue(value, attrMap);
+        if (translated) node.setAttribute(attr, translated);
       });
     });
   };
