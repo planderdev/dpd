@@ -1,0 +1,64 @@
+name: Deploy site to GitHub Pages
+
+# 관리자 화면(admin/)은 배포본에서 제외한다. 로그인 정보가 프론트엔드
+# 코드에 평문으로 들어 있어 공개 호스팅에 올리지 않는다. 운영 문서와
+# 점검 스크립트도 사이트에서 서빙할 이유가 없어 함께 뺀다.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 배포본 구성
+        run: |
+          mkdir -p _site
+          rsync -a \
+            --exclude '.git' \
+            --exclude '.github' \
+            --exclude '_site' \
+            --exclude 'admin' \
+            --exclude 'scripts' \
+            --exclude 'README.md' \
+            --exclude 'MANIFESTO.md' \
+            ./ _site/
+
+      - name: 제외 대상이 실제로 빠졌는지 확인
+        run: |
+          for path in admin scripts README.md MANIFESTO.md; do
+            if [ -e "_site/$path" ]; then
+              echo "::error::_site/$path 가 배포본에 남아 있습니다."
+              exit 1
+            fi
+          done
+          test -f _site/index.html
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
