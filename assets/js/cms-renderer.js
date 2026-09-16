@@ -24,7 +24,29 @@
     return String(value == null ? "" : value).trim();
   };
 
+  // CMS 데이터의 경로는 사이트 루트 기준이라 현재 문서 위치에 맞춰 앞을 채워줘야 한다.
+  // 사이트가 도메인 루트가 아니라 하위 경로(예: /dpd/)에 올라갈 수 있으므로,
+  // 문서 경로의 깊이가 아니라 이 스크립트가 놓인 위치에서 루트를 역산한다.
+  var scriptRoot = (function () {
+    var src = "";
+    if (document.currentScript && document.currentScript.src) {
+      src = document.currentScript.src;
+    } else {
+      var nodes = document.getElementsByTagName("script");
+      for (var i = nodes.length - 1; i >= 0; i -= 1) {
+        if (/assets\/js\/cms-renderer\.js(\?|#|$)/.test(nodes[i].src || "")) {
+          src = nodes[i].src;
+          break;
+        }
+      }
+    }
+    if (!src) return "";
+    return src.replace(/assets\/js\/cms-renderer\.js.*$/, "");
+  })();
+
+  // 스크립트 위치를 못 찾았을 때만 쓰는 예비 계산. 도메인 루트 배포를 가정한다.
   var getRootPrefix = function () {
+    if (scriptRoot) return scriptRoot;
     var path = window.location.pathname.replace(/\\/g, "/");
     var parts = path.split("/").filter(Boolean);
     if (!parts.length) return "";
