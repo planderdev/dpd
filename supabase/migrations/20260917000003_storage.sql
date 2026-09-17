@@ -47,17 +47,17 @@ drop policy if exists "admin uploads cms files" on storage.objects;
 create policy "admin uploads cms files"
   on storage.objects for insert
   to authenticated
-  with check (bucket_id in ('cms-media', 'cms-downloads') and public.is_admin());
+  with check (bucket_id in ('cms-media', 'cms-downloads') and private.is_admin());
 
 drop policy if exists "admin updates cms files" on storage.objects;
 create policy "admin updates cms files"
   on storage.objects for update
   to authenticated
-  using (bucket_id in ('cms-media', 'cms-downloads') and public.is_admin())
-  with check (bucket_id in ('cms-media', 'cms-downloads') and public.is_admin());
+  using (bucket_id in ('cms-media', 'cms-downloads') and private.is_admin())
+  with check (bucket_id in ('cms-media', 'cms-downloads') and private.is_admin());
 
 drop policy if exists "admin deletes cms files" on storage.objects;
 create policy "admin deletes cms files"
   on storage.objects for delete
   to authenticated
-  using (bucket_id in ('cms-media', 'cms-downloads') and public.is_admin());
+  using (bucket_id in ('cms-media', 'cms-downloads') and private.is_admin());
