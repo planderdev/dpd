@@ -30,6 +30,7 @@
   --leading-140: 1.4;
   --leading-150: 1.5;
   --tracking-none: 0;
+  --space-4: 4px;
   --space-8: 8px;
   --space-12: 12px;
   --space-16: 16px;
@@ -59,6 +60,7 @@
   --color-error-rgb: 180 35 24;
   --color-error-surface: #FEF3F2;
   --color-white: #fff;
+  --color-white-rgb: 255 255 255;
   --color-surface: #fff;
   --color-surface-muted: #f6f6f6;
   --color-surface-soft: #f1f1f1;

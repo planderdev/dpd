@@ -4,6 +4,10 @@
   var store = window.DpdCmsStore;
   if (!store) return;
 
+  // 영문 입력 필드는 폼 안에서 이 접두사로 구분하고, 저장할 때 item.en 으로 묶는다.
+  // 백엔드로 옮길 때는 en 을 그대로 jsonb 한 칸에 담으면 된다.
+  var EN_PREFIX = "en:";
+
   var q = function (selector, parent) {
     return (parent || document).querySelector(selector);
   };
@@ -118,8 +122,8 @@
           fields: [
             { name: "enabled", label: "노출", type: "checkbox" },
             { name: "eyebrow", label: "영문 라벨", type: "text" },
-            { name: "title", label: "메인 문구", type: "text", wide: true },
-            { name: "alt", label: "대체 텍스트", type: "text", wide: true }
+            { name: "title", label: "메인 문구", type: "text", wide: true, i18n: true },
+            { name: "alt", label: "대체 텍스트", type: "text", wide: true, i18n: true }
           ]
         },
         {
@@ -143,9 +147,9 @@
           fields: [
             { name: "enabled", label: "노출", type: "checkbox" },
             { name: "eyebrow", label: "카드 라벨", type: "text" },
-            { name: "title", label: "카드 타이틀", type: "text" },
+            { name: "title", label: "카드 타이틀", type: "text", i18n: true },
             { name: "image", label: "카드 이미지", type: "asset", wide: true },
-            { name: "alt", label: "대체 텍스트", type: "text", wide: true },
+            { name: "alt", label: "대체 텍스트", type: "text", wide: true, i18n: true },
             { name: "href", label: "상세 링크", type: "text", wide: true },
             { name: "external", label: "새 창 링크", type: "checkbox" }
           ]
@@ -156,9 +160,9 @@
           fields: [
             { name: "visualImage", label: "상세 대표 이미지", type: "asset", wide: true },
             { name: "detailEyebrow", label: "상세 영문 라벨", type: "text" },
-            { name: "detailTitle", label: "상세 제목", type: "text" },
-            { name: "lead", label: "리드 문장", type: "text", wide: true },
-            { name: "summary", label: "요약 본문", type: "textarea", wide: true }
+            { name: "detailTitle", label: "상세 제목", type: "text", i18n: true },
+            { name: "lead", label: "리드 문장", type: "text", wide: true, i18n: true },
+            { name: "summary", label: "요약 본문", type: "textarea", wide: true, i18n: true }
           ]
         },
         {
@@ -166,9 +170,9 @@
           desc: "상세페이지 제품 개요 카드와 썸네일 갤러리에 반영됩니다.",
           fields: [
             { name: "gallery", label: "상세 갤러리 이미지", type: "gallery", wide: true },
-            { name: "overviewTitle", label: "개요 제목", type: "text" },
-            { name: "overviewDescription", label: "개요 설명", type: "textarea", wide: true },
-            { name: "bullets", label: "핵심 bullet", type: "list", wide: true }
+            { name: "overviewTitle", label: "개요 제목", type: "text", i18n: true },
+            { name: "overviewDescription", label: "개요 설명", type: "textarea", wide: true, i18n: true },
+            { name: "bullets", label: "핵심 bullet", type: "list", wide: true, i18n: true }
           ]
         },
         {
@@ -176,8 +180,8 @@
           desc: "상세페이지 구성/사양 영역의 표 데이터입니다.",
           fields: [
             { name: "specEyebrow", label: "사양 라벨", type: "text" },
-            { name: "specTitle", label: "사양 제목", type: "text" },
-            { name: "specs", label: "사양 항목", type: "pairs", wide: true }
+            { name: "specTitle", label: "사양 제목", type: "text", i18n: true },
+            { name: "specs", label: "사양 항목", type: "pairs", wide: true, i18n: true }
           ]
         },
         {
@@ -185,8 +189,8 @@
           desc: "상세페이지 하단 카드형 포인트를 추가하거나 삭제할 수 있습니다.",
           fields: [
             { name: "featureEyebrow", label: "포인트 라벨", type: "text" },
-            { name: "featureTitle", label: "포인트 제목", type: "text" },
-            { name: "features", label: "포인트 카드", type: "cards", wide: true }
+            { name: "featureTitle", label: "포인트 제목", type: "text", i18n: true },
+            { name: "features", label: "포인트 카드", type: "cards", wide: true, i18n: true }
           ]
         }
       ]
@@ -203,8 +207,8 @@
             { name: "enabled", label: "노출", type: "checkbox" },
             { name: "title", label: "브랜드명", type: "text" },
             { name: "country", label: "제조 국가 라벨", type: "countrySelect" },
-            { name: "category", label: "카테고리 뱃지", type: "text" },
-            { name: "description", label: "주요 품목", type: "textarea", wide: true },
+            { name: "category", label: "카테고리 뱃지", type: "text", i18n: true },
+            { name: "description", label: "주요 품목", type: "textarea", wide: true, i18n: true },
             { name: "image", label: "썸네일 이미지", type: "asset", wide: true }
           ]
         },
@@ -238,7 +242,7 @@
             { name: "name", label: "고객사명", type: "text" },
             { name: "row", label: "메인 마퀴 줄", type: "select", options: [["top", "상단"], ["bottom", "하단"]] },
             { name: "image", label: "로고 이미지", type: "asset", wide: true },
-            { name: "alt", label: "대체 텍스트", type: "text", wide: true }
+            { name: "alt", label: "대체 텍스트", type: "text", wide: true, i18n: true }
           ]
         }
       ]
@@ -254,8 +258,8 @@
           fields: [
             { name: "enabled", label: "노출", type: "checkbox" },
             { name: "category", label: "자료 카테고리", type: "select", options: [["drawing", "도면자료"], ["catalog", "카탈로그 자료"]] },
-            { name: "title", label: "제목", type: "text", wide: true },
-            { name: "summary", label: "내용", type: "textarea", wide: true }
+            { name: "title", label: "제목", type: "text", wide: true, i18n: true },
+            { name: "summary", label: "내용", type: "textarea", wide: true, i18n: true }
           ]
         },
         {
@@ -277,14 +281,139 @@
           desc: "공지사항 목록과 상세 본문에 반영되는 핵심 정보입니다.",
           fields: [
             { name: "enabled", label: "노출", type: "checkbox" },
-            { name: "title", label: "제목", type: "text", wide: true }
+            { name: "title", label: "제목", type: "text", wide: true, i18n: true }
           ]
         },
         {
           title: "공지 내용",
           desc: "에디터 라이브러리로 본문 서식과 리스트를 작성합니다. 백엔드 연결 전까지 현재 브라우저 DB에 저장됩니다.",
           fields: [
-            { name: "content", label: "내용 입력", type: "richtext", wide: true }
+            { name: "content", label: "내용 입력", type: "richtext", wide: true, i18n: true }
+          ]
+        }
+      ]
+    },
+    companyProfile: {
+      title: "회사개요",
+      icon: "ri-profile-line",
+      group: "회사소개",
+      meta: function (item) { return item.value || ""; },
+      groups: [
+        {
+          title: "개요 항목",
+          desc: "회사개요 페이지의 표에 한 줄로 반영됩니다.",
+          fields: [
+            { name: "enabled", label: "노출", type: "checkbox" },
+            { name: "label", label: "항목명", type: "text", i18n: true },
+            { name: "value", label: "내용", type: "text", wide: true, i18n: true },
+            { name: "note", label: "괄호 보조 설명", type: "text", wide: true, i18n: true }
+          ]
+        }
+      ]
+    },
+    companyHistory: {
+      title: "회사연혁",
+      icon: "ri-time-line",
+      group: "회사소개",
+      meta: function (item) { return [item.year, item.month].filter(Boolean).join("."); },
+      groups: [
+        {
+          title: "연혁 항목",
+          desc: "연도별로 자동으로 묶이며, 최근 연도와 최근 월이 위에 옵니다.",
+          fields: [
+            { name: "enabled", label: "노출", type: "checkbox" },
+            { name: "year", label: "연도", type: "text" },
+            { name: "month", label: "월", type: "text" },
+            { name: "text", label: "내용", type: "text", wide: true, i18n: true }
+          ]
+        }
+      ]
+    },
+    certificates: {
+      title: "인증 및 지적재산권",
+      icon: "ri-award-line",
+      group: "회사소개",
+      meta: function (item) { return item.title || ""; },
+      groups: [
+        {
+          title: "인증서 카드",
+          desc: "인증 및 지적재산권 페이지의 카드 목록에 반영됩니다.",
+          fields: [
+            { name: "enabled", label: "노출", type: "checkbox" },
+            { name: "title", label: "인증서명", type: "text", wide: true, i18n: true },
+            { name: "image", label: "인증서 이미지", type: "asset", wide: true },
+            { name: "alt", label: "대체 텍스트", type: "text", wide: true, i18n: true }
+          ]
+        }
+      ]
+    },
+    supportSteps: {
+      title: "솔루션 프로세스",
+      icon: "ri-flow-chart",
+      group: "기술지원",
+      meta: function (item) { return item.step || ""; },
+      groups: [
+        {
+          title: "프로세스 단계",
+          desc: "기술지원 솔루션 페이지의 단계 카드에 반영됩니다.",
+          fields: [
+            { name: "enabled", label: "노출", type: "checkbox" },
+            { name: "step", label: "단계 라벨", type: "text" },
+            { name: "title", label: "단계 제목", type: "text", i18n: true },
+            { name: "description", label: "단계 설명", type: "textarea", wide: true, i18n: true },
+            { name: "image", label: "단계 이미지", type: "asset", wide: true },
+            { name: "alt", label: "대체 텍스트", type: "text", wide: true, i18n: true }
+          ]
+        }
+      ]
+    },
+    networkPartner: {
+      title: "해외 파트너 정보",
+      icon: "ri-global-line",
+      group: "기술지원",
+      meta: function (item) { return item.value || ""; },
+      groups: [
+        {
+          title: "파트너 정보 항목",
+          desc: "해외 네트워크 페이지의 파트너 카드 정보에 한 줄로 반영됩니다.",
+          fields: [
+            { name: "enabled", label: "노출", type: "checkbox" },
+            { name: "label", label: "항목명", type: "text", i18n: true },
+            { name: "value", label: "내용", type: "text", wide: true, i18n: true }
+          ]
+        }
+      ]
+    },
+    networkCoverage: {
+      title: "해외 커버리지",
+      icon: "ri-map-pin-line",
+      group: "기술지원",
+      meta: function (item) { return item.region || ""; },
+      groups: [
+        {
+          title: "대응 지역",
+          desc: "해외 네트워크 페이지의 Coverage 목록에 반영됩니다. 번호는 순서대로 자동 부여됩니다.",
+          fields: [
+            { name: "enabled", label: "노출", type: "checkbox" },
+            { name: "region", label: "지역명", type: "text", i18n: true },
+            { name: "description", label: "설명", type: "textarea", wide: true, i18n: true }
+          ]
+        }
+      ]
+    },
+    networkResponse: {
+      title: "해외 대응 내용",
+      icon: "ri-customer-service-2-line",
+      group: "기술지원",
+      meta: function (item) { return item.title || ""; },
+      groups: [
+        {
+          title: "대응 항목",
+          desc: "해외 네트워크 페이지 하단의 대응 내용 목록에 반영됩니다. 번호는 순서대로 자동 부여됩니다.",
+          fields: [
+            { name: "enabled", label: "노출", type: "checkbox" },
+            { name: "title", label: "항목 제목", type: "text", i18n: true },
+            { name: "description", label: "설명", type: "textarea", wide: true, i18n: true }
           ]
         }
       ]
@@ -399,7 +528,14 @@
       summary: "공지 요약을 입력하세요.",
       href: "kr/pr/notice.html#content",
       content: "<p>공지 내용을 입력하세요.</p>"
-    }
+    },
+    companyProfile: { enabled: true, label: "새 항목", value: "내용을 입력하세요.", note: "" },
+    companyHistory: { enabled: true, year: String(new Date().getFullYear()), month: "01", text: "연혁 내용을 입력하세요." },
+    certificates: { enabled: true, title: "새 인증서", image: "assets/images/dpd/certificates/venture-certificate.jpg", alt: "새 인증서" },
+    supportSteps: { enabled: true, step: "STEP 07", title: "새 단계", description: "단계 설명을 입력하세요.", image: "assets/images/support/support-step-01-control-panel.jpg", alt: "새 단계 이미지" },
+    networkPartner: { enabled: true, label: "새 항목", value: "내용을 입력하세요." },
+    networkCoverage: { enabled: true, region: "새 지역", description: "대응 내용을 입력하세요." },
+    networkResponse: { enabled: true, title: "새 대응 항목", description: "대응 내용을 입력하세요." }
   };
 
   var notify = function (message, type) {
@@ -1228,16 +1364,19 @@
     ].join("");
   };
 
-  var fieldMarkup = function (field, item) {
-    var value = item[field.name];
-    var id = "cmsField_" + activeSection + "_" + activeIndex + "_" + field.name;
+  var fieldMarkup = function (field, item, lang) {
+    // 영문 입력은 같은 폼 안에 en:<필드명> 이름으로 담고, 저장할 때 item.en 으로 모은다.
+    var isEnglish = lang === "en";
+    var name = isEnglish ? EN_PREFIX + field.name : field.name;
+    var value = isEnglish ? (item.en || {})[field.name] : item[field.name];
+    var id = "cmsField_" + activeSection + "_" + activeIndex + "_" + name;
     var wide = field.wide ? " is-wide" : "";
 
     if (field.type === "checkbox") {
       return [
         '<div class="cms-form-group' + wide + '">',
         '  <label class="cms-check-row" for="' + esc(id) + '">',
-        '    <input type="checkbox" id="' + esc(id) + '" name="' + esc(field.name) + '"' + (value !== false ? " checked" : "") + '>',
+        '    <input type="checkbox" id="' + esc(id) + '" name="' + esc(name) + '"' + (value !== false ? " checked" : "") + '>',
         '    <span>' + esc(field.label) + '</span>',
         '  </label>',
         '</div>'
@@ -1249,7 +1388,7 @@
         '<div class="cms-form-group' + wide + '">',
         '  <label class="cms-label" for="' + esc(id) + '">' + esc(field.label) + '</label>',
         '  <span class="cms-select-wrap">',
-        '    <select class="cms-select" id="' + esc(id) + '" name="' + esc(field.name) + '">',
+        '    <select class="cms-select" id="' + esc(id) + '" name="' + esc(name) + '">',
         (field.options || []).map(function (option) {
           return '<option value="' + esc(option[0]) + '"' + (String(value) === String(option[0]) ? " selected" : "") + '>' + esc(option[1]) + '</option>';
         }).join(""),
@@ -1267,7 +1406,7 @@
         '<div class="cms-form-group' + wide + '">',
         '  <label class="cms-label" for="' + esc(id) + '">' + esc(field.label) + '</label>',
         '  <span class="cms-select-wrap">',
-        '    <select class="cms-select" id="' + esc(id) + '" name="' + esc(field.name) + '">',
+        '    <select class="cms-select" id="' + esc(id) + '" name="' + esc(name) + '">',
         countryOptions.map(function (option) {
           return '<option value="' + esc(option.value) + '"' + (selectedCountry === option.value ? " selected" : "") + '>' + esc(option.label) + '</option>';
         }).join(""),
@@ -1292,7 +1431,7 @@
       return [
         '<div class="cms-form-group' + wide + '">',
         '  <label class="cms-label" for="' + esc(id) + '">' + esc(field.label) + '</label>',
-        '  <textarea class="cms-textarea" id="' + esc(id) + '" name="' + esc(field.name) + '">' + esc(field.type === "list" ? toLines(value) : value || "") + '</textarea>',
+        '  <textarea class="cms-textarea" id="' + esc(id) + '" name="' + esc(name) + '">' + esc(field.type === "list" ? toLines(value) : value || "") + '</textarea>',
         '</div>'
       ].join("");
     }
@@ -1302,8 +1441,8 @@
         '<div class="cms-form-group' + wide + '">',
         '  <label class="cms-label" for="' + esc(id) + '">' + esc(field.label) + '</label>',
         '  <div class="cms-asset-field" data-cms-asset-field>',
-        '    <input type="hidden" id="' + esc(id) + '" name="' + esc(field.name) + '" value="' + esc(value || "") + '" data-cms-asset-input>',
-        '    ' + fileUploadMarkup({ name: field.name, value: value, accept: "image/*,video/*" }),
+        '    <input type="hidden" id="' + esc(id) + '" name="' + esc(name) + '" value="' + esc(value || "") + '" data-cms-asset-input>',
+        '    ' + fileUploadMarkup({ name: name, value: value, accept: "image/*,video/*" }),
         '    <div class="cms-asset-preview">' + assetPreviewMarkup(value, item.alt || item.title || field.label) + '</div>',
         '    <div class="cms-asset-actions"><button class="cms-button cms-button--danger" type="button" data-cms-clear-asset><i class="ri-delete-bin-line" aria-hidden="true"></i><span>파일 삭제</span></button></div>',
         '  </div>',
@@ -1325,9 +1464,9 @@
       return [
         '<div class="cms-form-group' + wide + '">',
         '  <span class="cms-label">' + esc(field.label) + '</span>',
-        '  <div class="cms-gallery-manager" data-field-name="' + esc(field.name) + '">',
+        '  <div class="cms-gallery-manager" data-field-name="' + esc(name) + '">',
         '    <div class="cms-gallery-list">',
-        (images.length ? images : [""]).map(function (path) { return galleryItemMarkup(field.name, path); }).join(""),
+        (images.length ? images : [""]).map(function (path) { return galleryItemMarkup(name, path); }).join(""),
         '    </div>',
         '    <button class="cms-button cms-button--ghost" type="button" data-cms-add-gallery><i class="ri-add-line" aria-hidden="true"></i><span>이미지 추가</span></button>',
         '  </div>',
@@ -1340,7 +1479,7 @@
       return [
         '<div class="cms-form-group' + wide + '">',
         '  <span class="cms-label">' + esc(field.label) + '</span>',
-        '  <div class="cms-repeat-manager" data-field-name="' + esc(field.name) + '">',
+        '  <div class="cms-repeat-manager" data-field-name="' + esc(name) + '">',
         '    <div class="cms-repeat-list">',
         (pairs.length ? pairs : [{ label: "", value: "" }]).map(pairRowMarkup).join(""),
         '    </div>',
@@ -1355,7 +1494,7 @@
       return [
         '<div class="cms-form-group' + wide + '">',
         '  <span class="cms-label">' + esc(field.label) + '</span>',
-        '  <div class="cms-repeat-manager" data-field-name="' + esc(field.name) + '">',
+        '  <div class="cms-repeat-manager" data-field-name="' + esc(name) + '">',
         '    <div class="cms-repeat-list">',
         (cards.length ? cards : [{ title: "", text: "" }]).map(cardRowMarkup).join(""),
         '    </div>',
@@ -1368,7 +1507,7 @@
     return [
       '<div class="cms-form-group' + wide + '">',
       '  <label class="cms-label" for="' + esc(id) + '">' + esc(field.label) + '</label>',
-      '  <input class="cms-input" type="text" id="' + esc(id) + '" name="' + esc(field.name) + '" value="' + esc(value || "") + '">',
+      '  <input class="cms-input" type="text" id="' + esc(id) + '" name="' + esc(name) + '" value="' + esc(value || "") + '">',
       '</div>'
     ].join("");
   };
@@ -1597,9 +1736,28 @@
     });
   };
 
+  var bindLanguageTabs = function () {
+    qa("[data-cms-lang-group]", editorForm).forEach(function (group) {
+      qa("[data-cms-lang]", group).forEach(function (tab) {
+        if (tab.dataset.cmsBound) return;
+        tab.dataset.cmsBound = "true";
+        tab.addEventListener("click", function () {
+          var lang = tab.getAttribute("data-cms-lang");
+          qa("[data-cms-lang]", group).forEach(function (other) {
+            other.classList.toggle("is-active", other === tab);
+          });
+          qa("[data-cms-lang-pane]", group).forEach(function (pane) {
+            pane.hidden = pane.getAttribute("data-cms-lang-pane") !== lang;
+          });
+        });
+      });
+    });
+  };
+
   var bindEditorControls = function () {
     bindRichTextEditors();
     bindGallerySorting();
+    bindLanguageTabs();
 
     qa("[data-cms-file-upload]", editorForm).forEach(function (input) {
       if (input.dataset.cmsBound) return;
@@ -1841,18 +1999,50 @@
     });
 
     editorFields.innerHTML = (section.groups || []).map(function (group) {
+      var fields = group.fields || [];
+      var translatable = fields.filter(function (field) { return field.i18n; });
+
+      // 번역 대상이 없는 묶음은 예전처럼 한 벌만 그린다.
+      if (!translatable.length) {
+        return [
+          '<section class="cms-fieldset">',
+          '  <div class="cms-fieldset-head">',
+          '    <div>',
+          '      <h3 class="cms-fieldset-title">' + esc(group.title) + '</h3>',
+          group.desc ? '      <p class="cms-fieldset-desc">' + esc(group.desc) + '</p>' : "",
+          '    </div>',
+          '  </div>',
+          '  <div class="cms-fieldset-grid">',
+          fields.map(function (field) { return fieldMarkup(field, item); }).join(""),
+          '  </div>',
+          '</section>'
+        ].join("");
+      }
+
+      // 번역 대상이 있으면 국문/영문 탭으로 나눈다. 영문 탭에는 번역할 항목만 둔다.
+      var filled = translatable.filter(function (field) {
+        var value = (item.en || {})[field.name];
+        return Array.isArray(value) ? value.length : String(value || "").trim();
+      }).length;
+
       return [
-        '<section class="cms-fieldset">',
+        '<section class="cms-fieldset" data-cms-lang-group>',
         '  <div class="cms-fieldset-head">',
         '    <div>',
         '      <h3 class="cms-fieldset-title">' + esc(group.title) + '</h3>',
         group.desc ? '      <p class="cms-fieldset-desc">' + esc(group.desc) + '</p>' : "",
         '    </div>',
+        '    <div class="cms-lang-tabs" role="group" aria-label="입력 언어 선택">',
+        '      <button type="button" class="cms-lang-tab is-active" data-cms-lang="ko">국문</button>',
+        '      <button type="button" class="cms-lang-tab" data-cms-lang="en">영문<span class="cms-lang-count">' + filled + '/' + translatable.length + '</span></button>',
+        '    </div>',
         '  </div>',
-        '  <div class="cms-fieldset-grid">',
-        (group.fields || []).map(function (field) {
-          return fieldMarkup(field, item);
-        }).join(""),
+        '  <div class="cms-fieldset-grid" data-cms-lang-pane="ko">',
+        fields.map(function (field) { return fieldMarkup(field, item); }).join(""),
+        '  </div>',
+        '  <div class="cms-fieldset-grid" data-cms-lang-pane="en" hidden>',
+        '    <p class="cms-field-help cms-lang-note">비워두면 영문 화면에도 국문 내용이 그대로 나옵니다.</p>',
+        translatable.map(function (field) { return fieldMarkup(field, item, "en"); }).join(""),
         '  </div>',
         '</section>'
       ].join("");
@@ -1934,6 +2124,18 @@
       }
       if (value !== undefined) current[field.name] = value;
     });
+
+    // 영문 입력은 en 하나로 모은다. 비어 있는 항목은 담지 않아, 프론트가
+    // 번역이 없는 항목을 국문으로 그대로 보여준다.
+    var translations = {};
+    allFields(section).filter(function (field) { return field.i18n; }).forEach(function (field) {
+      var value = readFieldValue({ name: EN_PREFIX + field.name, type: field.type });
+      if (value === undefined) return;
+      var empty = Array.isArray(value) ? !value.length : !String(value == null ? "" : value).trim();
+      if (!empty) translations[field.name] = value;
+    });
+    if (Object.keys(translations).length) current.en = translations;
+    else delete current.en;
 
     if (activeSection === "handledItems") {
       syncHandledCountryFields(current);
