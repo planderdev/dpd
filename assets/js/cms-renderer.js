@@ -529,6 +529,134 @@
     }
   };
 
+  // 회사개요 표. 한 줄이 라벨/값 한 쌍이고, note 는 값 아래 괄호 문구로 붙는다.
+  var renderCompanyProfile = function (collections) {
+    var list = q(".dpd-outline-info-list");
+    if (!list) return;
+    var rows = enabled(collections.companyProfile);
+    if (!rows.length) return;
+    list.innerHTML = rows.map(function (item) {
+      var note = plain(item.note);
+      return '<li><span class="dpd-outline-label">' + esc(item.label) + '</span>'
+        + '<strong class="dpd-outline-value">' + esc(item.value)
+        + (note ? '<br><span>' + esc(note) + '</span>' : "")
+        + '</strong></li>';
+    }).join("");
+  };
+
+  // 연혁. 관리자에서는 한 줄씩 넣고, 화면에서는 연도별로 묶어 최근 순으로 보여준다.
+  var renderCompanyHistory = function (collections) {
+    var container = q(".history-con");
+    if (!container) return;
+    var entries = enabled(collections.companyHistory);
+    if (!entries.length) return;
+
+    var order = [];
+    var byYear = {};
+    entries.forEach(function (item) {
+      var year = plain(item.year);
+      if (!byYear[year]) {
+        byYear[year] = [];
+        order.push(year);
+      }
+      byYear[year].push(item);
+    });
+    order.sort(function (a, b) { return Number(b) - Number(a); });
+
+    container.innerHTML = order.map(function (year, index) {
+      var months = byYear[year].slice().sort(function (a, b) {
+        return Number(plain(b.month)) - Number(plain(a.month));
+      });
+      return [
+        '<div class="history-year-group-box' + (index === 0 ? " active" : "") + '">',
+        '  <div class="history-dot"><span class="circle"></span><span class="circle"></span><span class="circle"></span><i></i></div>',
+        '  <div class="history-year-group-tit-box"><h3 class="history-year-group-tit">' + esc(year) + '</h3><p class="history-year-group-txt">회사소개서 기준 주요 연혁</p></div>',
+        '  <article class="history-year-list-box"><div class="history-year-item"><h4 class="history-year"><strong>' + esc(year) + '</strong></h4><ul class="history-month-box">',
+        months.map(function (item) {
+          return '<li class="history-month-item"><strong class="history-month">' + esc(item.month) + '</strong>'
+            + '<div class="history-detail-txt-con"><p class="history-detail-txt">' + esc(item.text) + '</p></div></li>';
+        }).join(""),
+        '  </ul></div></article>',
+        '</div>'
+      ].join("");
+    }).join("");
+  };
+
+  var renderCertificates = function (collections) {
+    var list = q(".dpd-certificate-card-list");
+    if (!list) return;
+    var items = enabled(collections.certificates);
+    if (!items.length) return;
+    list.innerHTML = items.map(function (item) {
+      return [
+        '<li class="dpd-certificate-card">',
+        '  <figure class="dpd-certificate-thumb">',
+        '    <img src="' + esc(assetPath(item.image)) + '" alt="' + esc(item.alt || item.title) + '" loading="lazy">',
+        '  </figure>',
+        '  <h5 class="dpd-certificate-name">' + esc(item.title) + '</h5>',
+        '</li>'
+      ].join("");
+    }).join("");
+  };
+
+  var renderSupportSteps = function (collections) {
+    var grid = q(".dpd-support-process-grid");
+    if (!grid) return;
+    var steps = enabled(collections.supportSteps);
+    if (!steps.length) return;
+    grid.innerHTML = steps.map(function (item) {
+      return [
+        '<article>',
+        '  <figure class="dpd-support-process-thumb"><img src="' + esc(assetPath(item.image)) + '" alt="' + esc(item.alt || item.title) + '" loading="lazy"></figure>',
+        '  <div class="dpd-support-process-body"><span>' + esc(item.step) + '</span><h5>' + esc(item.title) + '</h5><p>' + esc(item.description) + '</p></div>',
+        '</article>'
+      ].join("");
+    }).join("");
+  };
+
+  // 해외 네트워크. 번호는 목록 순서에서 뽑아 관리자가 따로 맞추지 않아도 되게 한다.
+  var orderNumber = function (index) {
+    return (index + 1 < 10 ? "0" : "") + (index + 1);
+  };
+
+  var renderGlobalNetwork = function (collections) {
+    var info = q(".dpd-network-info dl");
+    if (info) {
+      var rows = enabled(collections.networkPartner);
+      if (rows.length) {
+        info.innerHTML = rows.map(function (item) {
+          return '<div><dt>' + esc(item.label) + '</dt><dd>' + esc(item.value) + '</dd></div>';
+        }).join("");
+      }
+    }
+
+    var coverage = q(".dpd-network-coverage-list");
+    if (coverage) {
+      var regions = enabled(collections.networkCoverage);
+      if (regions.length) {
+        coverage.innerHTML = regions.map(function (item, index) {
+          return '<li><span>' + esc(orderNumber(index)) + '</span><b>' + esc(item.region) + '</b><p>' + esc(item.description) + '</p></li>';
+        }).join("");
+      }
+    }
+
+    var response = q(".dpd-network-response-list");
+    if (response) {
+      var items = enabled(collections.networkResponse);
+      if (items.length) {
+        response.innerHTML = items.map(function (item, index) {
+          return [
+            '<li>',
+            '  <span>' + esc(orderNumber(index)) + '</span>',
+            '  <strong>' + esc(item.title) + '</strong>',
+            '  <p>' + esc(item.description) + '</p>',
+            '</li>'
+          ].join("");
+        }).join("");
+      }
+    }
+  };
+
   var renderNotices = function (collections) {
     var notices = enabled(collections.notices);
 
@@ -569,9 +697,28 @@
     }
   };
 
+  // 관리자가 넣은 영문은 항목의 en 에 들어 있다. 영문 화면에서는 읽는 시점에
+  // 한 번만 덮어써서, 아래 렌더 함수들이 언어를 신경 쓰지 않게 한다.
+  // 번역이 비어 있는 항목은 국문 값이 그대로 남는다.
+  var localizeCollections = function (collections) {
+    if (!window.DPD_I18N || !window.DPD_I18N.isEnglish) return collections;
+    var localized = {};
+    Object.keys(collections).forEach(function (key) {
+      var items = collections[key];
+      localized[key] = Array.isArray(items) ? items.map(function (item) {
+        if (!item || !item.en) return item;
+        var merged = {};
+        Object.keys(item).forEach(function (field) { merged[field] = item[field]; });
+        Object.keys(item.en).forEach(function (field) { merged[field] = item.en[field]; });
+        return merged;
+      }) : items;
+    });
+    return localized;
+  };
+
   var renderAll = function () {
     var data = store.getData();
-    var collections = data.collections || {};
+    var collections = localizeCollections(data.collections || {});
     renderMainHero(collections);
     renderMainDevelopment(collections);
     renderHandledItems(collections);
@@ -579,6 +726,11 @@
     renderResources(collections);
     renderNotices(collections);
     renderProductDetail(collections);
+    renderCompanyProfile(collections);
+    renderCompanyHistory(collections);
+    renderCertificates(collections);
+    renderSupportSteps(collections);
+    renderGlobalNetwork(collections);
     bindContactForms();
     window.dispatchEvent(new CustomEvent("dpd:cms-rendered", { detail: { updatedAt: data.updatedAt || "" } }));
   };

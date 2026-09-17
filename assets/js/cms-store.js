@@ -540,6 +540,330 @@
           content: "<p>디피디의 개발품목, 취급품목, 자료실, 문의 정보를 더 쉽게 확인하실 수 있도록 홈페이지를 정비했습니다.</p>"
         }
       ],
+      companyProfile: [
+        {
+          "id": "profile-회사명",
+          "enabled": true,
+          "label": "회사명",
+          "value": "주식회사 디피디 (DPD Co.,Ltd.)",
+          "note": ""
+        },
+        {
+          "id": "profile-법인-전환일",
+          "enabled": true,
+          "label": "법인 전환일",
+          "value": "2024년 10월 02일",
+          "note": "(개인사업자 2022년 05월 설립)"
+        },
+        {
+          "id": "profile-대표이사",
+          "enabled": true,
+          "label": "대표이사",
+          "value": "박준일",
+          "note": ""
+        },
+        {
+          "id": "profile-사업분야",
+          "enabled": true,
+          "label": "사업분야",
+          "value": "자동화 부품 개발 및 도소매 유통",
+          "note": ""
+        },
+        {
+          "id": "profile-본사",
+          "enabled": true,
+          "label": "본사",
+          "value": "경기도 시흥시 마유로 376, 417호 (정왕동, 시흥창업센터)",
+          "note": ""
+        },
+        {
+          "id": "profile-공장",
+          "enabled": true,
+          "label": "공장",
+          "value": "경기도 안산시 상록구 버대길 172 (양상동)",
+          "note": ""
+        },
+        {
+          "id": "profile-주요-품목",
+          "enabled": true,
+          "label": "주요 품목",
+          "value": "Cam Rack & Roller Pinion, DD Motor, Linear Motor, Reducer, Robot Etc...",
+          "note": ""
+        },
+        {
+          "id": "profile-홈페이지",
+          "enabled": true,
+          "label": "홈페이지",
+          "value": "https://dpdxfa.com/",
+          "note": ""
+        }
+      ],
+      companyHistory: [
+        {
+          "id": "history-2026-03",
+          "enabled": true,
+          "year": "2026",
+          "month": "03",
+          "text": "중소벤처기업진흥공단 글로벌창업사관학교 7기 입교 (서울본교)"
+        },
+        {
+          "id": "history-2026-01",
+          "enabled": true,
+          "year": "2026",
+          "month": "01",
+          "text": "사업장 이전"
+        },
+        {
+          "id": "history-2025-12",
+          "enabled": true,
+          "year": "2025",
+          "month": "12",
+          "text": "벤처기업확인 인증"
+        },
+        {
+          "id": "history-2025-02",
+          "enabled": true,
+          "year": "2025",
+          "month": "02",
+          "text": "청년창업사관학교 14기 졸업 (안산본교)"
+        },
+        {
+          "id": "history-2025-01",
+          "enabled": true,
+          "year": "2025",
+          "month": "01",
+          "text": "사업장 이전 (경기도 시흥시 소재)"
+        },
+        {
+          "id": "history-2024-11",
+          "enabled": true,
+          "year": "2024",
+          "month": "11",
+          "text": "특허등록 제10-2736155호"
+        },
+        {
+          "id": "history-2024-11",
+          "enabled": true,
+          "year": "2024",
+          "month": "11",
+          "text": "통신판매업 등록"
+        },
+        {
+          "id": "history-2024-09",
+          "enabled": true,
+          "year": "2024",
+          "month": "09",
+          "text": "법인사업자 전환 (주식회사 디피디)"
+        },
+        {
+          "id": "history-2024-03",
+          "enabled": true,
+          "year": "2024",
+          "month": "03",
+          "text": "중소벤처기업진흥공단 청년창업사관학교 14기 입교 (안산본교)"
+        },
+        {
+          "id": "history-2023-03",
+          "enabled": true,
+          "year": "2023",
+          "month": "03",
+          "text": "크로스롤러베어링 대체 베어링 구동계 제작 기술 협약 (“J”社)"
+        },
+        {
+          "id": "history-2023-03",
+          "enabled": true,
+          "year": "2023",
+          "month": "03",
+          "text": "리니어피커 제작 관련 기술 협약 (“M”社)"
+        },
+        {
+          "id": "history-2022-10",
+          "enabled": true,
+          "year": "2022",
+          "month": "10",
+          "text": "3D비전 · 협동로봇 활용 AMR 제작 기술 협약 (“T”社)"
+        },
+        {
+          "id": "history-2022-06",
+          "enabled": true,
+          "year": "2022",
+          "month": "06",
+          "text": "리니어 모터 활용 구동계 제작 기술 협약 (“D”社)"
+        },
+        {
+          "id": "history-2022-06",
+          "enabled": true,
+          "year": "2022",
+          "month": "06",
+          "text": "특허출원 직선 및 회전 구동계 분진 제거 장치"
+        },
+        {
+          "id": "history-2022-05",
+          "enabled": true,
+          "year": "2022",
+          "month": "05",
+          "text": "개인사업자 설립 (디피디)"
+        }
+      ],
+      certificates: [
+        {
+          "id": "certificate-벤처기업확인서",
+          "enabled": true,
+          "title": "벤처기업확인서",
+          "image": "assets/images/dpd/certificates/venture-certificate.jpg",
+          "alt": "벤처기업확인서"
+        },
+        {
+          "id": "certificate-통신판매업-신고증",
+          "enabled": true,
+          "title": "통신판매업 신고증",
+          "image": "assets/images/dpd/certificates/mail-order-registration.jpg",
+          "alt": "통신판매업 신고증"
+        },
+        {
+          "id": "certificate-청창사-졸업장",
+          "enabled": true,
+          "title": "청창사 졸업장",
+          "image": "assets/images/dpd/certificates/youth-startup-academy-diploma.jpg",
+          "alt": "청창사 졸업장"
+        },
+        {
+          "id": "certificate-특허증",
+          "enabled": true,
+          "title": "특허증",
+          "image": "assets/images/dpd/certificates/patent-certificate.jpg",
+          "alt": "특허증"
+        }
+      ],
+      supportSteps: [
+        {
+          "id": "support-step-01",
+          "enabled": true,
+          "step": "STEP 01",
+          "title": "기술·견적 문의 접수",
+          "description": "온라인, 전화, 이메일을 통해 사용 조건과 요구 사양을 접수합니다.",
+          "image": "assets/images/support/support-step-01-control-panel.jpg",
+          "alt": "기술 문의를 검토하는 자동화 제어 패널 이미지"
+        },
+        {
+          "id": "support-step-02",
+          "enabled": true,
+          "step": "STEP 02",
+          "title": "제품 선정 상담",
+          "description": "용도, 하중, 정밀도, 납기 조건을 검토해 최적 품목을 제안합니다.",
+          "image": "assets/images/support/support-step-02-clean-room.jpg",
+          "alt": "제품 선정 상담을 위한 클린룸 제조 현장 이미지"
+        },
+        {
+          "id": "support-step-03",
+          "enabled": true,
+          "step": "STEP 03",
+          "title": "도면·기술자료 제공",
+          "description": "도면, 카탈로그, 기술자료를 제공하고 적용 사양을 함께 검토합니다.",
+          "image": "assets/images/support/support-step-03-machine-panel.jpg",
+          "alt": "도면과 기술자료 검토용 산업 장비 제어 패널 이미지"
+        },
+        {
+          "id": "support-step-04",
+          "enabled": true,
+          "step": "STEP 04",
+          "title": "공급·납품",
+          "description": "경쟁력 있는 가격과 안정적인 납기로 제품을 공급합니다.",
+          "image": "assets/images/support/support-step-04-conveyor.jpg",
+          "alt": "공급과 납품을 위한 산업용 컨베이어 현장 이미지"
+        },
+        {
+          "id": "support-step-05",
+          "enabled": true,
+          "step": "STEP 05",
+          "title": "설치·운영 지원",
+          "description": "현장 설치와 초기 운전 과정에서 필요한 기술 지원을 제공합니다.",
+          "image": "assets/images/support/support-step-05-robot-arm.jpg",
+          "alt": "설치 운영 지원을 위한 로봇 자동화 설비 이미지"
+        },
+        {
+          "id": "support-step-06",
+          "enabled": true,
+          "step": "STEP 06",
+          "title": "유지보수·사후 대응",
+          "description": "납품 이후에도 운전 안정성과 유지보수를 위한 대응을 이어갑니다.",
+          "image": "assets/images/support/support-step-06-cnc-machine.jpg",
+          "alt": "유지보수 사후 대응을 위한 CNC 가공 설비 이미지"
+        }
+      ],
+      networkPartner: [
+        {
+          "id": "partner-사업자등록번호",
+          "enabled": true,
+          "label": "사업자등록번호",
+          "value": "0202332953"
+        },
+        {
+          "id": "partner-설립일",
+          "enabled": true,
+          "label": "설립일",
+          "value": "2026년 01월 21일"
+        },
+        {
+          "id": "partner-주소",
+          "enabled": true,
+          "label": "주소",
+          "value": "Tòa nhà Thành Đạt, Số 3 Lê Thánh Tông, Ngô Quyền, Hải Phòng, Việt Nam"
+        }
+      ],
+      networkCoverage: [
+        {
+          "id": "coverage-01",
+          "enabled": true,
+          "no": "01",
+          "region": "Hưng Yên",
+          "description": "제조 현장 사양 검토와 초기 납품 대응을 연결합니다."
+        },
+        {
+          "id": "coverage-02",
+          "enabled": true,
+          "no": "02",
+          "region": "Bắc Ninh",
+          "description": "전자·자동화 산업 고객사의 제품 선정과 기술 상담을 지원합니다."
+        },
+        {
+          "id": "coverage-03",
+          "enabled": true,
+          "no": "03",
+          "region": "Hải Phòng",
+          "description": "항만 물류와 북부 산업단지 납품·유지보수 거점으로 대응합니다."
+        }
+      ],
+      networkResponse: [
+        {
+          "id": "response-01",
+          "enabled": true,
+          "no": "01",
+          "title": "현지 제품 공급",
+          "description": "디피디 취급 품목의 베트남 내 견적 · 납품 대응"
+        },
+        {
+          "id": "response-02",
+          "enabled": true,
+          "no": "02",
+          "title": "기술 상담 · 사양 검토",
+          "description": "현장 조건에 맞는 품목 선정과 도면 · 기술자료 지원"
+        },
+        {
+          "id": "response-03",
+          "enabled": true,
+          "no": "03",
+          "title": "설치 · 시운전 지원",
+          "description": "현지 방문을 통한 설치 및 초기 가동 지원"
+        },
+        {
+          "id": "response-04",
+          "enabled": true,
+          "no": "04",
+          "title": "사후 대응 · 유지보수",
+          "description": "납품 이후 현지 A/S 및 유지보수 대응"
+        }
+      ],
       contactForms: [
       ]
     }

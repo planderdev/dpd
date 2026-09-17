@@ -411,6 +411,21 @@
   gap: var(--space-8);
 }
 
+/* 관리 메뉴가 길어져 같은 화면끼리 묶어주는 소제목. */
+.cms-nav-group {
+  margin: var(--space-16) 0 0;
+  padding: 0 var(--space-12);
+  color: var(--color-text-soft);
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--tracking-none);
+  line-height: var(--leading-130);
+}
+
+.cms-nav-group:first-child {
+  margin-top: 0;
+}
+
 .cms-nav button {
   display: flex;
   width: 100%;
@@ -1270,7 +1285,60 @@
 }
 
 .cms-fieldset-head {
-  display: block;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-16);
+  margin: 0;
+}
+
+/* 국문/영문 입력 전환 탭. 번역 대상 필드가 있는 묶음에만 붙는다. */
+.cms-lang-tabs {
+  display: inline-flex;
+  flex: none;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius-round);
+  background: var(--color-surface-muted);
+}
+
+.cms-lang-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-8);
+  padding: var(--space-8) var(--space-16);
+  border: 0;
+  border-radius: var(--radius-round);
+  background: transparent;
+  color: var(--color-text-muted);
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-13);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--leading-130);
+  cursor: pointer;
+}
+
+.cms-lang-tab.is-active {
+  background: var(--color-primary);
+  color: var(--color-white);
+}
+
+.cms-lang-count {
+  padding: 0 var(--space-8);
+  border-radius: var(--radius-round);
+  background: rgb(var(--color-primary-rgb) / 0.12);
+  color: inherit;
+  font-size: var(--font-size-12);
+  font-weight: var(--font-weight-medium);
+}
+
+.cms-lang-tab.is-active .cms-lang-count {
+  background: rgb(var(--color-white-rgb) / 0.24);
+}
+
+.cms-lang-note {
+  grid-column: 1 / -1;
   margin: 0;
 }
 
