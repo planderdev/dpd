@@ -51,7 +51,7 @@ begin
       create policy "public read enabled"
         on public.%I for select
         to anon, authenticated
-        using (enabled or public.is_admin())
+        using (enabled or private.is_admin())
     $p$, cms_table);
 
     -- 쓰기: 관리자만.
@@ -60,8 +60,8 @@ begin
       create policy "admin write"
         on public.%I for all
         to authenticated
-        using (public.is_admin())
-        with check (public.is_admin())
+        using (private.is_admin())
+        with check (private.is_admin())
     $p$, cms_table);
   end loop;
 end;
@@ -95,17 +95,17 @@ drop policy if exists "admin reads inquiries" on public.contact_forms;
 create policy "admin reads inquiries"
   on public.contact_forms for select
   to authenticated
-  using (public.is_admin());
+  using (private.is_admin());
 
 drop policy if exists "admin updates inquiries" on public.contact_forms;
 create policy "admin updates inquiries"
   on public.contact_forms for update
   to authenticated
-  using (public.is_admin())
-  with check (public.is_admin());
+  using (private.is_admin())
+  with check (private.is_admin());
 
 drop policy if exists "admin deletes inquiries" on public.contact_forms;
 create policy "admin deletes inquiries"
   on public.contact_forms for delete
   to authenticated
-  using (public.is_admin());
+  using (private.is_admin());

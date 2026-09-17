@@ -19,6 +19,7 @@ create extension if not exists "pgcrypto";
 create or replace function public.touch_updated_at()
 returns trigger
 language plpgsql
+set search_path = ''
 as $$
 begin
   new.updated_at = now();
@@ -36,7 +37,12 @@ create table if not exists public.admins (
 
 -- RLS 정책에서 쓰는 판별 함수.
 -- admins 테이블 자체도 RLS 를 걸기 때문에 security definer 로 우회해 조회한다.
-create or replace function public.is_admin()
+-- public 스키마에 두면 PostgREST 가 /rest/v1/rpc/is_admin 으로 외부에 노출하므로
+-- API 에 실리지 않는 private 스키마에 만든다. 정책은 호출자 권한으로 평가되니
+-- anon 과 authenticated 에게 execute 는 열어 둔다.
+create schema if not exists private;
+
+create or replace function private.is_admin()
 returns boolean
 language sql
 stable
@@ -48,7 +54,11 @@ as $$
   );
 $$;
 
+grant usage on schema private to anon, authenticated;
+grant execute on function private.is_admin() to anon, authenticated;
+
 -- 콘텐츠 테이블이 공통으로 갖는 컬럼을 붙인다.
+-- 테이블을 만들 때만 쓰는 일회성 헬퍼라, 아래에서 다 쓰고 나면 지운다.
 create or replace function public.add_cms_columns(table_name text)
 returns void
 language plpgsql
@@ -269,3 +279,6 @@ create trigger contact_forms_touch
 
 create index if not exists contact_forms_received_at_idx on public.contact_forms (received_at desc);
 create index if not exists contact_forms_status_idx on public.contact_forms (status);
+
+-- 일회성 헬퍼는 런타임에 남겨둘 이유가 없다.
+drop function if exists public.add_cms_columns(text);
